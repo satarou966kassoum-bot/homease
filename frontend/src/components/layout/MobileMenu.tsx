@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { X, Home, Building2, Trees, Landmark, Sofa, PlusCircle, Heart, MessageCircle } from "lucide-react";
+import { X, Home, Building2, Trees, Landmark, Sofa, PlusCircle, Heart, MessageCircle, Download } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import { useInstallPrompt } from "../../hooks/useInstallPrompt";
 
 interface Props {
   open: boolean;
@@ -18,6 +19,7 @@ const links = [
 
 export function MobileMenu({ open, onClose }: Props) {
   const { user, logout } = useAuth();
+  const { canInstall, promptInstall } = useInstallPrompt();
 
   return (
     <>
@@ -56,6 +58,16 @@ export function MobileMenu({ open, onClose }: Props) {
           ))}
 
           <div className="my-2 border-t border-sand-200" />
+
+          {canInstall && (
+            <button
+              onClick={promptInstall}
+              className="flex items-center gap-3 rounded px-3 py-2.5 text-sm font-medium text-lagoon-600 hover:bg-lagoon-50"
+            >
+              <Download size={18} />
+              Installer l'application
+            </button>
+          )}
 
           <Link
             to="/publish"
