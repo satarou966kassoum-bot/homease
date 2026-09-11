@@ -1,0 +1,36 @@
+import { Response, NextFunction } from "express";
+import { z } from "zod";
+import { User } from "../models/User";
+import { AppError } from "../middlewares/errorHandler";
+import { AuthRequest } from "../middlewares/auth";
+
+const updateSchema = z.object({
+  name: z.string().min(2).optional(),
+  phone: z.string().optional(),
+  avatarUrl: z.string().url().optional(),
+});
+
+export async function getMe(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) throw new AppError("Utilisateur introuvable.", 404);
+    res.json({ success: true, data: { user } });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateMe(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const data = updateSchema.parse(req.body);
+    const user = await User.findByIdAndUpdate(req.userId, data, {
+      new: true,
+      runValidators: true,
+    });
+    if (!user) throw new AppError("Utilisateur introuvable.", 404);
+    res.json({ success: true, message: "Profil mis à jour.", data: { user } });
+  } catch (error: any) {
+    if (error?.issues) return next(new AppError(error.issues[0].message, 422));
+    next(error);
+  }
+}

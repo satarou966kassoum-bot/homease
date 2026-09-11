@@ -1,0 +1,33 @@
+import { NavLink, Outlet, Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+
+const linkClass = ({ isActive }: { isActive: boolean }) =>
+  `block rounded px-3 py-2 text-sm font-medium ${
+    isActive ? "bg-lagoon-50 text-lagoon-600" : "text-ink-400 hover:bg-sand-100"
+  }`;
+
+export function DashboardLayout() {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) return null;
+  if (!user) return <Navigate to="/login" replace />;
+
+  return (
+    <div className="mx-auto max-w-6xl px-6 py-10">
+      <h1 className="font-display text-2xl font-medium">Tableau de bord</h1>
+      <div className="mt-6 grid gap-8 md:grid-cols-[200px_1fr]">
+        <nav className="space-y-1">
+          {(user.role === "owner" || user.role === "admin") && (
+            <NavLink to="/dashboard/listings" className={linkClass}>Mes annonces</NavLink>
+          )}
+          <NavLink to="/dashboard/reservations" className={linkClass}>Réservations</NavLink>
+          <NavLink to="/dashboard/messages" className={linkClass}>Messages</NavLink>
+          <NavLink to="/dashboard/profile" className={linkClass}>Profil</NavLink>
+        </nav>
+        <div>
+          <Outlet />
+        </div>
+      </div>
+    </div>
+  );
+}
