@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Home, Search, PlusCircle, Heart, User as UserIcon } from "lucide-react";
+import { Home, Search, PlusCircle, Heart, User as UserIcon, Menu } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { NotificationBell } from "./NotificationBell";
+import { MobileMenu } from "./MobileMenu";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `text-sm font-medium transition-colors ${
@@ -10,6 +12,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 
 export function Navbar() {
   const { user, logout } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
@@ -75,11 +78,20 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* En-tête mobile simple */}
-      <header className="flex items-center justify-between border-b border-sand-200 bg-sand-50 px-4 py-3 md:hidden">
-        <Link to="/" className="font-display text-lg font-semibold text-lagoon-500">
-          HomeEase
-        </Link>
+      {/* En-tête mobile compact */}
+      <header className="flex items-center justify-between border-b border-sand-200 bg-sand-50 px-3 py-3 md:hidden">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setMenuOpen(true)}
+            aria-label="Ouvrir le menu"
+            className="flex h-9 w-9 items-center justify-center rounded hover:bg-sand-100"
+          >
+            <Menu size={20} className="text-ink-500" />
+          </button>
+          <Link to="/" className="font-display text-base font-semibold text-lagoon-500">
+            HomeEase
+          </Link>
+        </div>
         {user ? (
           <div className="flex items-center gap-2">
             <NotificationBell />
@@ -95,6 +107,8 @@ export function Navbar() {
           </Link>
         )}
       </header>
+
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       {/* Navigation basse mobile */}
       <nav className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-around border-t border-sand-200 bg-white py-2 md:hidden">
