@@ -26,19 +26,39 @@
 }
 
 @layer components {
+  .page-container {
+    @apply mx-auto max-w-6xl px-4 sm:px-6;
+  }
+
+  .section {
+    @apply py-9 sm:py-14;
+  }
+
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded bg-lagoon-500 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-lagoon-600 disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-lagoon-500 px-5 py-3 text-sm font-medium text-white transition-transform active:scale-[0.98] hover:bg-lagoon-600 disabled:opacity-50;
   }
 
   .btn-accent {
-    @apply inline-flex items-center justify-center gap-2 rounded bg-ochre-500 px-5 py-3 text-sm font-medium text-ink-500 transition-colors hover:bg-ochre-600;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-ochre-500 px-5 py-3 text-sm font-medium text-ink-500 transition-transform active:scale-[0.98] hover:bg-ochre-600;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded border border-sand-200 bg-white px-5 py-3 text-sm font-medium text-ink-500 transition-colors hover:border-lagoon-500;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-sand-200 bg-white px-5 py-3 text-sm font-medium text-ink-500 transition-colors hover:border-lagoon-500;
   }
 
   .input-field {
-    @apply w-full rounded border border-sand-200 bg-white px-4 py-3 text-sm text-ink-500 placeholder:text-ink-300 focus:border-lagoon-500;
+    @apply w-full rounded-lg border border-sand-200 bg-white px-4 py-3 text-base text-ink-500 placeholder:text-ink-300 focus:border-lagoon-500;
+  }
+
+  .card {
+    @apply rounded-xl border border-sand-200 bg-white shadow-card;
+  }
+
+  .sheet-panel {
+    @apply fixed inset-x-0 bottom-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-xl bg-white shadow-sheet;
+  }
+
+  .sheet-handle {
+    @apply mx-auto mt-2 h-1.5 w-10 rounded-full bg-sand-200;
   }
 }

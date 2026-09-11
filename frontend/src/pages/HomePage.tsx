@@ -9,17 +9,24 @@ import {
   Home as HomeIcon,
   Trees,
   Landmark,
+  Sofa,
+  DoorOpen,
 } from "lucide-react";
 import { HeroSearchBar } from "../components/listings/HeroSearchBar";
-import { ListingCard } from "../components/listings/ListingCard";
+import { PropertyCard } from "../components/listings/PropertyCard";
+import { CategoryCard } from "../components/listings/CategoryCard";
+import { SkeletonCard } from "../components/ui/SkeletonCard";
+import { EmptyState } from "../components/ui/EmptyState";
 import { api } from "../services/api";
 import { Listing } from "../types";
 
 const categories = [
-  { label: "À louer", to: "/rent", icon: HomeIcon },
-  { label: "À vendre", to: "/buy", icon: Building2 },
+  { label: "Maisons", to: "/rent", icon: HomeIcon },
+  { label: "Appartements", to: "/search?category=appartement", icon: Building2 },
   { label: "Parcelles", to: "/land", icon: Trees },
-  { label: "Bureaux", to: "/search?category=bureau", icon: Landmark },
+  { label: "Villas", to: "/search?category=villa", icon: Landmark },
+  { label: "Bureaux", to: "/search?category=bureau", icon: DoorOpen },
+  { label: "Meublés", to: "/search?category=meuble", icon: Sofa },
 ];
 
 const zones = [
@@ -72,44 +79,33 @@ export function HomePage() {
     <div>
       {/* Hero */}
       <section className="bg-lagoon-500">
-        <div className="mx-auto grid max-w-6xl gap-10 px-6 pb-16 pt-14 md:grid-cols-2 md:items-center md:pb-24 md:pt-20">
-          <div>
-            <h1 className="font-display text-4xl font-medium leading-tight text-white md:text-5xl">
-              Trouvez votre prochain chez-vous.
-            </h1>
-            <p className="mt-4 max-w-md text-lagoon-100">
-              HomeEase rassemble les meilleures annonces de chambres, maisons,
-              appartements, villas et parcelles à Cotonou, Abomey-Calavi, Porto-Novo
-              et au-delà.
-            </p>
-          </div>
+        <div className="page-container pb-20 pt-14 sm:pb-28 sm:pt-20">
+          <h1 className="max-w-xl font-display text-4xl font-medium leading-[1.1] text-white sm:text-5xl">
+            Trouvez votre prochain chez-vous.
+          </h1>
+          <p className="mt-4 max-w-md text-base text-lagoon-100">
+            Explorez des logements, terrains et biens immobiliers au Bénin.
+          </p>
         </div>
       </section>
 
-      {/* Barre de recherche — chevauche le hero */}
-      <div className="mx-auto -mt-10 max-w-4xl px-6 md:-mt-14">
+      {/* Search card — chevauche le hero */}
+      <div className="page-container -mt-14 sm:-mt-16">
         <HeroSearchBar />
       </div>
 
-      {/* Catégories populaires */}
-      <section className="mx-auto max-w-6xl px-6 py-14">
+      {/* Catégories populaires — grille 2x2 sur mobile */}
+      <section className="section page-container">
         <h2 className="text-2xl font-medium">Catégories populaires</h2>
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {categories.map(({ label, to, icon: Icon }) => (
-            <Link
-              key={label}
-              to={to}
-              className="flex flex-col items-center gap-3 rounded-lg border border-sand-200 bg-white p-6 text-center transition-colors hover:border-lagoon-500"
-            >
-              <Icon size={26} className="text-lagoon-500" />
-              <span className="text-sm font-medium">{label}</span>
-            </Link>
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {categories.map((c) => (
+            <CategoryCard key={c.label} {...c} />
           ))}
         </div>
       </section>
 
       {/* Annonces populaires */}
-      <section className="mx-auto max-w-6xl px-6 py-6">
+      <section className="page-container pb-2">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-medium">Annonces populaires</h2>
           <Link to="/search" className="text-sm font-medium text-lagoon-500">
@@ -118,35 +114,36 @@ export function HomePage() {
         </div>
 
         {isLoading ? (
-          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-72 animate-pulse rounded-lg bg-sand-100" />
+              <SkeletonCard key={i} />
             ))}
           </div>
         ) : listings.length > 0 ? (
-          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {listings.map((listing) => (
-              <ListingCard key={listing._id} listing={listing} />
+              <PropertyCard key={listing._id} listing={listing} />
             ))}
           </div>
         ) : (
-          <div className="mt-6 rounded-lg border border-dashed border-sand-200 p-10 text-center text-ink-300">
-            Aucune annonce à afficher pour l'instant. Lance le script de seed
-            (<code>npm run seed</code> côté backend) pour voir des annonces de démo,
-            ou publie la première annonce toi-même.
+          <div className="mt-6">
+            <EmptyState
+              title="Aucune annonce pour l'instant"
+              description="Les premières annonces apparaîtront ici dès qu'elles seront publiées et approuvées."
+            />
           </div>
         )}
       </section>
 
       {/* Zones populaires */}
-      <section className="mx-auto max-w-6xl px-6 py-14">
+      <section className="section page-container">
         <h2 className="text-2xl font-medium">Zones populaires</h2>
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-6 flex flex-wrap gap-2.5">
           {zones.map((zone) => (
             <Link
               key={zone}
               to={`/search?city=${encodeURIComponent(zone)}`}
-              className="rounded-full border border-sand-200 bg-white px-4 py-2 text-sm font-medium hover:border-lagoon-500"
+              className="rounded-full border border-sand-200 bg-white px-4 py-2.5 text-sm font-medium hover:border-lagoon-500"
             >
               {zone}
             </Link>
@@ -155,8 +152,8 @@ export function HomePage() {
       </section>
 
       {/* Pourquoi HomeEase */}
-      <section className="bg-white py-14">
-        <div className="mx-auto max-w-6xl px-6">
+      <section className="bg-white py-9 sm:py-14">
+        <div className="page-container">
           <h2 className="text-2xl font-medium">Pourquoi HomeEase ?</h2>
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {advantages.map(({ icon: Icon, title, body }) => (
@@ -167,6 +164,23 @@ export function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* CTA publication */}
+      <section className="section page-container">
+        <div className="card flex flex-col items-center gap-4 bg-lagoon-500 px-6 py-10 text-center shadow-elevated sm:flex-row sm:justify-between sm:text-left">
+          <div>
+            <p className="font-display text-xl font-medium text-white">
+              Vous avez un bien à louer ou à vendre ?
+            </p>
+            <p className="mt-1 text-sm text-lagoon-100">
+              Publiez votre annonce gratuitement et touchez des milliers de personnes.
+            </p>
+          </div>
+          <Link to="/publish" className="btn-accent shrink-0">
+            Publier une annonce
+          </Link>
         </div>
       </section>
     </div>

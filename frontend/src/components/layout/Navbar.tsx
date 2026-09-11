@@ -111,7 +111,7 @@ export function Navbar() {
       <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       {/* Navigation basse mobile */}
-      <nav className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-around border-t border-sand-200 bg-white py-2 md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-around border-t border-sand-200 bg-white py-2 shadow-sheet md:hidden">
         <MobileTab to="/" icon={<Home size={20} />} label="Accueil" end />
         <MobileTab to="/search" icon={<Search size={20} />} label="Rechercher" />
         <MobileTab to="/publish" icon={<PlusCircle size={20} />} label="Publier" />
@@ -142,13 +142,23 @@ function MobileTab({
       to={to}
       end={end}
       className={({ isActive }) =>
-        `flex flex-col items-center gap-1 px-2 text-[11px] font-medium ${
+        `flex flex-col items-center gap-1 px-2 text-[11px] font-medium transition-colors ${
           isActive ? "text-lagoon-500" : "text-ink-300"
         }`
       }
     >
-      {icon}
-      {label}
+      {({ isActive }) => (
+        <>
+          <span
+            className={`flex h-8 w-12 items-center justify-center rounded-full transition-colors ${
+              isActive ? "bg-lagoon-50" : ""
+            }`}
+          >
+            {icon}
+          </span>
+          {label}
+        </>
+      )}
     </NavLink>
   );
 }

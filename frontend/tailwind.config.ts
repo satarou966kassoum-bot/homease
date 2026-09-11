@@ -46,12 +46,15 @@ export default {
         sans: ["Inter", "system-ui", "sans-serif"],
       },
       borderRadius: {
-        sm: "4px",
-        DEFAULT: "8px",
-        lg: "14px",
+        sm: "6px",
+        DEFAULT: "10px",
+        lg: "16px",
+        xl: "22px",
       },
       boxShadow: {
         card: "0 1px 2px rgba(27,36,32,0.06), 0 1px 0 rgba(27,36,32,0.04)",
+        elevated: "0 8px 24px rgba(27,36,32,0.10)",
+        sheet: "0 -8px 24px rgba(27,36,32,0.12)",
       },
     },
   },
