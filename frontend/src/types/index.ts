@@ -49,6 +49,8 @@ export interface Listing {
   amenities: string[];
   photos: string[];
   videos: string[];
+  mapsUrl?: string;
+  boostRequested?: boolean;
   status: ListingStatus;
   isDemo: boolean;
   isFeatured: boolean;

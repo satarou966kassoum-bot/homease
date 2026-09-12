@@ -242,6 +242,16 @@ export function ListingDetailPage() {
           <h1 className="mt-3 font-display text-2xl font-medium">{listing.title}</h1>
           <p className="mt-1 flex items-center gap-1 text-sm text-ink-300">
             <MapPin size={14} /> {listing.neighborhood}, {listing.city}
+            {listing.mapsUrl && (
+              <a
+                href={listing.mapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="ml-2 text-lagoon-500 underline"
+              >
+                Voir sur Google Maps
+              </a>
+            )}
           </p>
 
           <div className="mt-4 flex items-center gap-6 text-sm text-ink-400">

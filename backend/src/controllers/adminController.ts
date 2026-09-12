@@ -168,6 +168,7 @@ export async function toggleFeatured(
     if (!listing) throw new AppError("Annonce introuvable.", 404);
 
     listing.isFeatured = !listing.isFeatured;
+    if (listing.isFeatured) listing.boostRequested = false;
     await listing.save();
 
     res.json({

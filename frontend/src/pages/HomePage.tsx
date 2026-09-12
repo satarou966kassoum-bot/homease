@@ -86,7 +86,11 @@ export function HomePage() {
       {/* Hero — bannière pilotée depuis l'admin, ou texte par défaut */}
       <section className="bg-lagoon-500">
         {banners.length > 0 ? (
-          <HeroBannerCarousel banners={banners} />
+          <div className="page-container pt-4">
+            <div className="overflow-hidden rounded-xl border-4 border-sand-100">
+              <HeroBannerCarousel banners={banners} />
+            </div>
+          </div>
         ) : (
           <div className="page-container pb-20 pt-14 sm:pb-28 sm:pt-20">
             <h1 className="max-w-xl font-display text-4xl font-medium leading-[1.1] text-white sm:text-5xl">

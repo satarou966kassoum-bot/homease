@@ -28,6 +28,8 @@ import {
 import { DashboardListingsPage } from "./pages/DashboardListingsPage";
 import { DashboardProfilePage } from "./pages/DashboardProfilePage";
 import { DashboardStatsPage } from "./pages/DashboardStatsPage";
+import { DashboardBoosterPage } from "./pages/DashboardBoosterPage";
+import { DashboardCollectionsPage } from "./pages/DashboardCollectionsPage";
 
 import { AdminOverviewPage } from "./pages/admin/AdminOverviewPage";
 import { AdminBannersPage } from "./pages/admin/AdminBannersPage";
@@ -68,6 +70,8 @@ export default function App() {
               <Route path="listings" element={<DashboardListingsPage />} />
               <Route path="listings/:id/edit" element={<PublishPage />} />
               <Route path="stats" element={<DashboardStatsPage />} />
+              <Route path="booster" element={<DashboardBoosterPage />} />
+              <Route path="collections" element={<DashboardCollectionsPage />} />
               <Route path="reservations" element={<ReservationsPage />} />
               <Route path="messages" element={<MessagesPage />} />
               <Route path="profile" element={<DashboardProfilePage />} />

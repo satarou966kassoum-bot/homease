@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Share2, Rocket } from "lucide-react";
 import { api } from "../services/api";
 import { Listing } from "../types";
 import { formatFCFA, categoryLabels } from "../utils/format";
@@ -25,6 +26,7 @@ const statusColor: Record<string, string> = {
 export function DashboardListingsPage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
     api
@@ -39,10 +41,24 @@ export function DashboardListingsPage() {
     setListings((prev) => prev.filter((l) => l._id !== id));
   }
 
+  function handleShare(id: string) {
+    const url = `${window.location.origin}/listing/${id}`;
+    navigator.clipboard?.writeText(url);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  }
+
+  async function handleBoostRequest(id: string) {
+    const { data } = await api.put(`/listings/${id}/boost-request`);
+    setListings((prev) =>
+      prev.map((l) => (l._id === id ? { ...l, boostRequested: data.data.listing.boostRequested } : l))
+    );
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-medium">Mes annonces</h2>
+        <h2 className="text-lg font-medium">Annonces</h2>
         <Link to="/publish" className="btn-primary">Publier une annonce</Link>
       </div>
 
@@ -55,7 +71,7 @@ export function DashboardListingsPage() {
       ) : (
         <div className="mt-6 divide-y divide-sand-200 rounded-lg border border-sand-200 bg-white">
           {listings.map((listing) => (
-            <div key={listing._id} className="flex items-center justify-between gap-4 p-4">
+            <div key={listing._id} className="flex flex-wrap items-center justify-between gap-4 p-4">
               <div>
                 <Link to={`/listing/${listing._id}`} className="font-medium hover:text-lagoon-500">
                   {listing.title}
@@ -70,9 +86,30 @@ export function DashboardListingsPage() {
                       En avant
                     </span>
                   )}
+                  {listing.boostRequested && !listing.isFeatured && (
+                    <span className="ml-2 rounded-full bg-clay-500/10 px-2 py-0.5 text-clay-600">
+                      Boost demandé
+                    </span>
+                  )}
                 </p>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  onClick={() => handleShare(listing._id)}
+                  className="flex items-center gap-1.5 text-sm font-medium text-ink-400 hover:text-lagoon-600"
+                >
+                  <Share2 size={14} />
+                  {copiedId === listing._id ? "Lien copié !" : "Partager"}
+                </button>
+                {listing.status === "approuvee" && !listing.isFeatured && !listing.boostRequested && (
+                  <button
+                    onClick={() => handleBoostRequest(listing._id)}
+                    className="flex items-center gap-1.5 text-sm font-medium text-ochre-600 hover:underline"
+                  >
+                    <Rocket size={14} />
+                    Booster
+                  </button>
+                )}
                 <Link
                   to={`/dashboard/listings/${listing._id}/edit`}
                   className="text-sm font-medium text-lagoon-600 hover:underline"

@@ -94,7 +94,7 @@ export function DashboardProfilePage() {
         ]
       : []),
     { to: "/favorites", label: "Favoris", icon: Heart, value: stats.favorites },
-    { to: "/dashboard/reservations", label: "Réservations", icon: CalendarCheck, value: stats.reservations },
+    { to: "/dashboard/reservations", label: "Commandes", icon: CalendarCheck, value: stats.reservations },
     { to: "/messages", label: "Messages", icon: MessageCircle, value: null },
   ];
 

@@ -36,6 +36,8 @@ export interface IListing extends Document {
   amenities: string[];
   photos: string[];
   videos: string[];
+  mapsUrl?: string;
+  boostRequested: boolean;
   status: ListingStatus;
   isDemo: boolean;
   isFeatured: boolean;
@@ -78,6 +80,8 @@ const ListingSchema = new Schema<IListing>(
     amenities: { type: [String], default: [] },
     photos: { type: [String], default: [] },
     videos: { type: [String], default: [] },
+    mapsUrl: { type: String },
+    boostRequested: { type: Boolean, default: false },
     status: {
       type: String,
       enum: [

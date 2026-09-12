@@ -7,6 +7,7 @@ import {
   deleteListing,
   getMyListings,
   getMyStats,
+  requestBoost,
 } from "../controllers/listingController";
 import { protect, requireRole } from "../middlewares/auth";
 
@@ -15,6 +16,7 @@ const router = Router();
 router.get("/", getListings);
 router.get("/mine/all", protect, requireRole("owner", "admin"), getMyListings);
 router.get("/mine/stats", protect, requireRole("owner", "admin"), getMyStats);
+router.put("/:id/boost-request", protect, requireRole("owner", "admin"), requestBoost);
 router.get("/:id", getListingById);
 router.post("/", protect, requireRole("owner", "admin"), createListing);
 router.put("/:id", protect, updateListing);

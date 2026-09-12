@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, Home, TrendingUp } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
 import { api } from "../services/api";
 
 interface TopListing {
@@ -26,6 +38,8 @@ const statusLabel: Record<string, string> = {
   vendue_louee: "Vendue / louée",
 };
 
+const PIE_COLORS = ["#1F1D1B", "#8C6D3E", "#B23A2E", "#C4B79E", "#615E58", "#3D3B37"];
+
 export function DashboardStatsPage() {
   const [stats, setStats] = useState<Stats | null>(null);
 
@@ -35,8 +49,18 @@ export function DashboardStatsPage() {
 
   if (!stats) return <p className="text-sm text-ink-300">Chargement des statistiques...</p>;
 
+  const barData = stats.topListings.map((l) => ({
+    name: l.title.length > 14 ? l.title.slice(0, 14) + "…" : l.title,
+    vues: l.viewsCount,
+  }));
+
+  const pieData = Object.entries(stats.byStatus).map(([status, count]) => ({
+    name: statusLabel[status] || status,
+    value: count,
+  }));
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="card p-4">
           <Home size={18} className="text-lagoon-500" />
@@ -55,17 +79,40 @@ export function DashboardStatsPage() {
         </div>
       </div>
 
-      <div>
-        <p className="mb-3 text-sm font-semibold text-ink-500">Répartition par statut</p>
-        <div className="card divide-y divide-sand-100">
-          {Object.entries(stats.byStatus).map(([status, count]) => (
-            <div key={status} className="flex items-center justify-between px-4 py-2.5 text-sm">
-              <span className="text-ink-400">{statusLabel[status] || status}</span>
-              <span className="font-medium">{count}</span>
-            </div>
-          ))}
+      {barData.length > 0 && (
+        <div className="card p-4">
+          <p className="mb-3 text-sm font-semibold text-ink-500">Vues par annonce (top 5)</p>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={barData} margin={{ left: -20 }}>
+                <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} angle={-15} textAnchor="end" height={50} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                <Tooltip />
+                <Bar dataKey="vues" fill="#1F1D1B" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      </div>
+      )}
+
+      {pieData.length > 0 && (
+        <div className="card p-4">
+          <p className="mb-3 text-sm font-semibold text-ink-500">Répartition par statut</p>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={3}>
+                  {pieData.map((_, i) => (
+                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       {stats.topListings.length > 0 && (
         <div>

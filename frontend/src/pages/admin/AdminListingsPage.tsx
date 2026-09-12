@@ -60,6 +60,11 @@ export function AdminListingsPage() {
                       En avant
                     </span>
                   )}
+                  {(listing as any).boostRequested && !listing.isFeatured && (
+                    <span className="ml-2 rounded-full bg-clay-500/10 px-2 py-0.5 text-xs font-medium text-clay-600">
+                      Boost demandé
+                    </span>
+                  )}
                 </p>
                 <p className="text-sm text-ink-300">
                   {listing.city} · {formatFCFA(listing.price)} ·{" "}

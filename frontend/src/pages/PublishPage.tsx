@@ -20,6 +20,7 @@ export function PublishPage() {
     city: "",
     neighborhood: "",
     address: "",
+    mapsUrl: "",
     bedrooms: "",
     bathrooms: "",
     surfaceM2: "",
@@ -47,6 +48,7 @@ export function PublishPage() {
           city: l.city,
           neighborhood: l.neighborhood,
           address: l.address || "",
+          mapsUrl: l.mapsUrl || "",
           bedrooms: l.bedrooms != null ? String(l.bedrooms) : "",
           bathrooms: l.bathrooms != null ? String(l.bathrooms) : "",
           surfaceM2: l.surfaceM2 != null ? String(l.surfaceM2) : "",
@@ -263,6 +265,12 @@ export function PublishPage() {
             placeholder="Adresse approximative (optionnel)"
             value={form.address}
             onChange={(e) => update("address", e.target.value)}
+            className="input-field mt-3"
+          />
+          <input
+            placeholder="Lien Google Maps (optionnel)"
+            value={form.mapsUrl}
+            onChange={(e) => update("mapsUrl", e.target.value)}
             className="input-field mt-3"
           />
         </div>

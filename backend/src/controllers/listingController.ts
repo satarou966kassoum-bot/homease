@@ -28,6 +28,7 @@ const createSchema = z.object({
   amenities: z.array(z.string()).optional(),
   photos: z.array(z.string()).optional(),
   videos: z.array(z.string()).optional(),
+  mapsUrl: z.string().optional(),
 });
 
 // GET /api/listings — recherche + filtres + tri + pagination
@@ -216,6 +217,30 @@ export async function getMyListings(
       createdAt: -1,
     });
     res.json({ success: true, data: { listings } });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function requestBoost(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) throw new AppError("Annonce introuvable.", 404);
+    if (listing.owner.toString() !== req.userId) {
+      throw new AppError("Vous ne pouvez booster que vos propres annonces.", 403);
+    }
+    if (listing.status !== "approuvee") {
+      throw new AppError("Seule une annonce approuvée peut être boostée.", 400);
+    }
+
+    listing.boostRequested = true;
+    await listing.save();
+
+    res.json({
+      success: true,
+      message: "Demande de mise en avant envoyée à l'administration.",
+      data: { listing },
+    });
   } catch (error) {
     next(error);
   }
