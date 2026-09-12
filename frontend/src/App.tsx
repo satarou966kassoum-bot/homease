@@ -25,6 +25,7 @@ import {
 
 import { DashboardListingsPage } from "./pages/DashboardListingsPage";
 import { DashboardProfilePage } from "./pages/DashboardProfilePage";
+import { DashboardStatsPage } from "./pages/DashboardStatsPage";
 
 import { AdminOverviewPage } from "./pages/admin/AdminOverviewPage";
 import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
@@ -61,6 +62,7 @@ export default function App() {
               <Route index element={<DashboardProfilePage />} />
               <Route path="listings" element={<DashboardListingsPage />} />
               <Route path="listings/:id/edit" element={<PublishPage />} />
+              <Route path="stats" element={<DashboardStatsPage />} />
               <Route path="reservations" element={<ReservationsPage />} />
               <Route path="messages" element={<MessagesPage />} />
               <Route path="profile" element={<DashboardProfilePage />} />

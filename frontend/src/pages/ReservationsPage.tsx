@@ -36,6 +36,8 @@ export function ReservationsPage() {
   const { user } = useAuth();
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [payingId, setPayingId] = useState<string | null>(null);
+  const [paymentMessage, setPaymentMessage] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!user) {
@@ -53,6 +55,24 @@ export function ReservationsPage() {
     setReservations((prev) =>
       prev.map((r) => (r._id === id ? { ...r, status: status as Reservation["status"] } : r))
     );
+  }
+
+  async function handlePay(reservationId: string) {
+    setPayingId(reservationId);
+    try {
+      const { data } = await api.post("/payments", {
+        reservationId,
+        provider: "hors_plateforme",
+      });
+      setPaymentMessage((prev) => ({ ...prev, [reservationId]: data.message }));
+    } catch {
+      setPaymentMessage((prev) => ({
+        ...prev,
+        [reservationId]: "Impossible de démarrer le paiement pour l'instant.",
+      }));
+    } finally {
+      setPayingId(null);
+    }
   }
 
   if (!user) {
@@ -122,7 +142,20 @@ export function ReservationsPage() {
                       Annuler
                     </button>
                   )}
+
+                  {!isOwnerView && r.status === "confirmee" && (
+                    <button
+                      onClick={() => handlePay(r._id)}
+                      disabled={payingId === r._id}
+                      className="btn-accent px-3 py-1.5 text-xs"
+                    >
+                      {payingId === r._id ? "..." : "Payer"}
+                    </button>
+                  )}
                 </div>
+                {paymentMessage[r._id] && (
+                  <p className="w-full text-xs text-ink-300">{paymentMessage[r._id]}</p>
+                )}
               </div>
             );
           })}

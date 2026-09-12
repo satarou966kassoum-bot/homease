@@ -220,3 +220,32 @@ export async function getMyListings(
     next(error);
   }
 }
+
+export async function getMyStats(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const listings = await Listing.find({ owner: req.userId });
+
+    const totalViews = listings.reduce((sum, l) => sum + (l.viewsCount || 0), 0);
+    const byStatus = listings.reduce((acc: Record<string, number>, l) => {
+      acc[l.status] = (acc[l.status] || 0) + 1;
+      return acc;
+    }, {});
+
+    const topListings = [...listings]
+      .sort((a, b) => (b.viewsCount || 0) - (a.viewsCount || 0))
+      .slice(0, 5)
+      .map((l) => ({ id: l._id, title: l.title, viewsCount: l.viewsCount || 0, status: l.status }));
+
+    res.json({
+      success: true,
+      data: {
+        totalListings: listings.length,
+        totalViews,
+        byStatus,
+        topListings,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}

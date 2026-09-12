@@ -10,6 +10,7 @@ import {
   Clock,
   XCircle,
   UploadCloud,
+  BarChart3,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { api } from "../services/api";
@@ -87,7 +88,10 @@ export function DashboardProfilePage() {
 
   const quickActions = [
     ...(user.role === "owner" || user.role === "admin"
-      ? [{ to: "/dashboard/listings", label: "Mes annonces", icon: Home, value: stats.listings }]
+      ? [
+          { to: "/dashboard/listings", label: "Mes annonces", icon: Home, value: stats.listings },
+          { to: "/dashboard/stats", label: "Statistiques", icon: BarChart3, value: null },
+        ]
       : []),
     { to: "/favorites", label: "Favoris", icon: Heart, value: stats.favorites },
     { to: "/dashboard/reservations", label: "Réservations", icon: CalendarCheck, value: stats.reservations },

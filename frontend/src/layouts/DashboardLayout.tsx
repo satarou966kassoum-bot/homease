@@ -18,7 +18,10 @@ export function DashboardLayout() {
       <div className="mt-6 grid gap-8 md:grid-cols-[200px_1fr]">
         <nav className="space-y-1">
           {(user.role === "owner" || user.role === "admin") && (
-            <NavLink to="/dashboard/listings" className={linkClass}>Mes annonces</NavLink>
+            <>
+              <NavLink to="/dashboard/listings" className={linkClass}>Mes annonces</NavLink>
+              <NavLink to="/dashboard/stats" className={linkClass}>Statistiques</NavLink>
+            </>
           )}
           <NavLink to="/dashboard/reservations" className={linkClass}>Réservations</NavLink>
           <NavLink to="/dashboard/messages" className={linkClass}>Messages</NavLink>

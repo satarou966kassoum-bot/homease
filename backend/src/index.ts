@@ -17,6 +17,7 @@ import notificationRoutes from "./routes/notificationRoutes";
 import reportRoutes from "./routes/reportRoutes";
 import adminRoutes from "./routes/adminRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
+import paymentRoutes from "./routes/paymentRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -55,6 +56,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/uploads", uploadRoutes);
+app.use("/api/payments", paymentRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
