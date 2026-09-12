@@ -1,4 +1,5 @@
 export type UserRole = "client" | "owner" | "admin";
+export type KycStatus = "non_soumis" | "en_attente" | "verifie" | "rejete";
 
 export interface User {
   id: string;
@@ -7,6 +8,7 @@ export interface User {
   phone?: string;
   role: UserRole;
   avatarUrl?: string;
+  kycStatus?: KycStatus;
   createdAt: string;
 }
 
@@ -31,7 +33,7 @@ export type ListingStatus =
 
 export interface Listing {
   _id: string;
-  owner: { _id: string; name: string; avatarUrl?: string; phone?: string } | string;
+  owner: { _id: string; name: string; avatarUrl?: string; phone?: string; kycStatus?: KycStatus } | string;
   title: string;
   description: string;
   category: ListingCategory;

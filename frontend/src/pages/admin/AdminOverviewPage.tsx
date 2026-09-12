@@ -8,6 +8,7 @@ interface Stats {
   pendingListings: number;
   totalReservations: number;
   openReports: number;
+  pendingKyc: number;
   recentUsers: { _id: string; name: string; email: string; role: string }[];
 }
 
@@ -27,6 +28,7 @@ export function AdminOverviewPage() {
     { label: "En attente de validation", value: stats.pendingListings },
     { label: "Réservations", value: stats.totalReservations },
     { label: "Signalements ouverts", value: stats.openReports },
+    { label: "Vérifications en attente", value: stats.pendingKyc },
   ];
 
   return (

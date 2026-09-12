@@ -16,6 +16,7 @@ import { formatFCFA, categoryLabels, transactionLabels } from "../utils/format";
 import { PropertyCard } from "../components/listings/PropertyCard";
 import { useAuth } from "../contexts/AuthContext";
 import { useFavorite } from "../hooks/useFavorite";
+import { VerifiedBadge } from "../components/ui/VerifiedBadge";
 
 const reportReasons = [
   { value: "fausse_annonce", label: "Fausse annonce" },
@@ -305,7 +306,10 @@ export function ListingDetailPage() {
                 {owner.name.charAt(0).toUpperCase()}
               </span>
               <div>
-                <p className="text-sm font-medium">{owner.name}</p>
+                <p className="flex items-center gap-1.5 text-sm font-medium">
+                  {owner.name}
+                  {(owner as any).kycStatus === "verifie" && <VerifiedBadge compact />}
+                </p>
                 <p className="text-xs text-ink-300">Propriétaire / annonceur</p>
               </div>
             </div>

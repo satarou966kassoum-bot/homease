@@ -34,3 +34,32 @@ export async function updateMe(req: AuthRequest, res: Response, next: NextFuncti
     next(error);
   }
 }
+
+const kycSchema = z.object({
+  documentUrl: z.string().url("Le document est requis."),
+});
+
+export async function submitKyc(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const data = kycSchema.parse(req.body);
+    const user = await User.findByIdAndUpdate(
+      req.userId,
+      {
+        kycStatus: "en_attente",
+        kycDocumentUrl: data.documentUrl,
+        kycSubmittedAt: new Date(),
+        kycNote: undefined,
+      },
+      { new: true }
+    );
+    if (!user) throw new AppError("Utilisateur introuvable.", 404);
+    res.json({
+      success: true,
+      message: "Document envoyé. Votre vérification est en cours d'examen.",
+      data: { user },
+    });
+  } catch (error: any) {
+    if (error?.issues) return next(new AppError(error.issues[0].message, 422));
+    next(error);
+  }
+}

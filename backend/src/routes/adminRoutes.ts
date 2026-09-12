@@ -5,6 +5,9 @@ import {
   updateUserStatus,
   getAdminListings,
   updateListingStatus,
+  toggleFeatured,
+  getKycSubmissions,
+  updateKycStatus,
   getReports,
   updateReportStatus,
 } from "../controllers/adminController";
@@ -22,8 +25,12 @@ router.put("/users/:id", updateUserStatus);
 
 router.get("/listings", getAdminListings);
 router.put("/listings/:id/status", updateListingStatus);
+router.put("/listings/:id/feature", toggleFeatured);
 
 router.get("/reports", getReports);
 router.put("/reports/:id", updateReportStatus);
+
+router.get("/kyc", getKycSubmissions);
+router.put("/kyc/:id", updateKycStatus);
 
 export default router;

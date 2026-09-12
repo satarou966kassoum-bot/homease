@@ -15,6 +15,7 @@ export async function getStats(req: AuthRequest, res: Response, next: NextFuncti
       totalReservations,
       recentUsers,
       openReports,
+      pendingKyc,
     ] = await Promise.all([
       User.countDocuments(),
       Listing.countDocuments(),
@@ -23,6 +24,7 @@ export async function getStats(req: AuthRequest, res: Response, next: NextFuncti
       Reservation.countDocuments(),
       User.find().sort({ createdAt: -1 }).limit(5).select("name email role createdAt"),
       Report.countDocuments({ status: "ouvert" }),
+      User.countDocuments({ kycStatus: "en_attente" }),
     ]);
 
     res.json({
@@ -34,6 +36,7 @@ export async function getStats(req: AuthRequest, res: Response, next: NextFuncti
         pendingListings,
         totalReservations,
         openReports,
+        pendingKyc,
         recentUsers,
       },
     });
@@ -150,6 +153,72 @@ export async function updateListingStatus(
     }
 
     res.json({ success: true, message: "Statut de l'annonce mis à jour.", data: { listing } });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function toggleFeatured(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) throw new AppError("Annonce introuvable.", 404);
+
+    listing.isFeatured = !listing.isFeatured;
+    await listing.save();
+
+    res.json({
+      success: true,
+      message: listing.isFeatured ? "Annonce mise en avant." : "Mise en avant retirée.",
+      data: { listing },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getKycSubmissions(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const users = await User.find({ kycStatus: "en_attente" }).sort({ kycSubmittedAt: 1 });
+    res.json({ success: true, data: { users } });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateKycStatus(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { status, note } = req.body as { status: "verifie" | "rejete"; note?: string };
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { kycStatus: status, kycNote: note },
+      { new: true }
+    );
+    if (!user) throw new AppError("Utilisateur introuvable.", 404);
+
+    await Notification.create({
+      user: user._id,
+      type: status === "verifie" ? "annonce_approuvee" : "annonce_rejetee",
+      title: status === "verifie" ? "Profil vérifié" : "Vérification refusée",
+      body:
+        status === "verifie"
+          ? "Votre profil est maintenant certifié. Le badge \"Annonceur vérifié\" est actif."
+          : `Votre demande de vérification a été refusée.${note ? " Motif : " + note : ""}`,
+      link: "/dashboard/profile",
+    });
+
+    res.json({ success: true, message: "Statut KYC mis à jour.", data: { user } });
   } catch (error) {
     next(error);
   }

@@ -65,14 +65,27 @@ export function DashboardListingsPage() {
                 </p>
                 <p className={`mt-1 text-xs font-medium ${statusColor[listing.status]}`}>
                   {statusLabel[listing.status]}
+                  {listing.isFeatured && (
+                    <span className="ml-2 rounded-full bg-ochre-100 px-2 py-0.5 text-ochre-600">
+                      En avant
+                    </span>
+                  )}
                 </p>
               </div>
-              <button
-                onClick={() => handleDelete(listing._id)}
-                className="text-sm text-clay-500 hover:underline"
-              >
-                Supprimer
-              </button>
+              <div className="flex items-center gap-4">
+                <Link
+                  to={`/dashboard/listings/${listing._id}/edit`}
+                  className="text-sm font-medium text-lagoon-600 hover:underline"
+                >
+                  Modifier
+                </Link>
+                <button
+                  onClick={() => handleDelete(listing._id)}
+                  className="text-sm text-clay-500 hover:underline"
+                >
+                  Supprimer
+                </button>
+              </div>
             </div>
           ))}
         </div>

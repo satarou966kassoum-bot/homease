@@ -1,5 +1,5 @@
-import { FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { FormEvent, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import { categoryLabels } from "../utils/format";
@@ -8,6 +8,9 @@ import { MediaUploader } from "../components/listings/MediaUploader";
 export function PublishPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEditing = !!id;
+
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -27,6 +30,34 @@ export function PublishPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingListing, setIsLoadingListing] = useState(isEditing);
+
+  useEffect(() => {
+    if (!id) return;
+    api
+      .get(`/listings/${id}`)
+      .then((res) => {
+        const l = res.data.data.listing;
+        setForm({
+          title: l.title,
+          description: l.description,
+          price: String(l.price),
+          category: l.category,
+          transactionType: l.transactionType,
+          city: l.city,
+          neighborhood: l.neighborhood,
+          address: l.address || "",
+          bedrooms: l.bedrooms != null ? String(l.bedrooms) : "",
+          bathrooms: l.bathrooms != null ? String(l.bathrooms) : "",
+          surfaceM2: l.surfaceM2 != null ? String(l.surfaceM2) : "",
+          furnished: !!l.furnished,
+        });
+        setPhotos(l.photos || []);
+        setVideos(l.videos || []);
+      })
+      .catch(() => setError("Impossible de charger cette annonce."))
+      .finally(() => setIsLoadingListing(false));
+  }, [id]);
 
   if (!user || (user.role !== "owner" && user.role !== "admin")) {
     return (
@@ -39,6 +70,10 @@ export function PublishPage() {
     );
   }
 
+  if (isLoadingListing) {
+    return <div className="page-container section text-center text-ink-300">Chargement de l'annonce...</div>;
+  }
+
   function update<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((f) => ({ ...f, [key]: value }));
   }
@@ -47,20 +82,25 @@ export function PublishPage() {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
+    const payload = {
+      ...form,
+      price: Number(form.price),
+      bedrooms: form.bedrooms ? Number(form.bedrooms) : undefined,
+      bathrooms: form.bathrooms ? Number(form.bathrooms) : undefined,
+      surfaceM2: form.surfaceM2 ? Number(form.surfaceM2) : undefined,
+      photos,
+      videos,
+    };
     try {
-      await api.post("/listings", {
-        ...form,
-        price: Number(form.price),
-        bedrooms: form.bedrooms ? Number(form.bedrooms) : undefined,
-        bathrooms: form.bathrooms ? Number(form.bathrooms) : undefined,
-        surfaceM2: form.surfaceM2 ? Number(form.surfaceM2) : undefined,
-        photos,
-        videos,
-      });
+      if (isEditing) {
+        await api.put(`/listings/${id}`, payload);
+      } else {
+        await api.post("/listings", payload);
+      }
       setSuccess(true);
       setTimeout(() => navigate("/dashboard/listings"), 1200);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Impossible de publier l'annonce.");
+      setError(err.response?.data?.message || "Impossible d'enregistrer l'annonce.");
     } finally {
       setIsSubmitting(false);
     }
@@ -68,14 +108,18 @@ export function PublishPage() {
 
   return (
     <div className="page-container section max-w-2xl">
-      <h1 className="font-display text-2xl font-medium">Publier une annonce</h1>
+      <h1 className="font-display text-2xl font-medium">
+        {isEditing ? "Modifier l'annonce" : "Publier une annonce"}
+      </h1>
       <p className="mt-1 text-sm text-ink-300">
-        Votre annonce sera visible après validation par un administrateur.
+        {isEditing
+          ? "Les modifications repasseront l'annonce en attente de validation."
+          : "Votre annonce sera visible après validation par un administrateur."}
       </p>
 
       {success && (
         <p className="mt-4 rounded-lg border border-lagoon-500/30 bg-lagoon-50 px-4 py-3 text-sm text-lagoon-600">
-          Annonce publiée avec succès. Statut : en attente de validation.
+          {isEditing ? "Annonce mise à jour avec succès." : "Annonce publiée avec succès. Statut : en attente de validation."}
         </p>
       )}
       {error && (
@@ -224,7 +268,7 @@ export function PublishPage() {
         </div>
 
         <button type="submit" disabled={isSubmitting} className="btn-primary w-full py-3.5 text-base">
-          {isSubmitting ? "Publication..." : "Publier l'annonce"}
+          {isSubmitting ? "Enregistrement..." : isEditing ? "Enregistrer les modifications" : "Publier l'annonce"}
         </button>
       </form>
     </div>

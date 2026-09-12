@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 import bcrypt from "bcryptjs";
 
 export type UserRole = "client" | "owner" | "admin";
+export type KycStatus = "non_soumis" | "en_attente" | "verifie" | "rejete";
 
 export interface IUser extends Document {
   name: string;
@@ -11,6 +12,10 @@ export interface IUser extends Document {
   role: UserRole;
   isSuspended: boolean;
   avatarUrl?: string;
+  kycStatus: KycStatus;
+  kycDocumentUrl?: string;
+  kycSubmittedAt?: Date;
+  kycNote?: string;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidate: string): Promise<boolean>;
@@ -36,6 +41,14 @@ const UserSchema = new Schema<IUser>(
     },
     isSuspended: { type: Boolean, default: false },
     avatarUrl: { type: String },
+    kycStatus: {
+      type: String,
+      enum: ["non_soumis", "en_attente", "verifie", "rejete"],
+      default: "non_soumis",
+    },
+    kycDocumentUrl: { type: String },
+    kycSubmittedAt: { type: Date },
+    kycNote: { type: String },
   },
   { timestamps: true }
 );

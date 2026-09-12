@@ -26,6 +26,7 @@ function sanitizeUser(user: any) {
     phone: user.phone,
     role: user.role,
     avatarUrl: user.avatarUrl,
+    kycStatus: user.kycStatus,
     createdAt: user.createdAt,
   };
 }

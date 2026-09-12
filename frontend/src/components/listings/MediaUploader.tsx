@@ -23,6 +23,12 @@ export function MediaUploader({ photos, videos, onChange }: Props) {
     setError("");
     const files = Array.from(fileList);
 
+    // On accumule localement pour ne pas écraser les fichiers précédents :
+    // "photos"/"videos" (props) ne se mettent à jour qu'au prochain rendu,
+    // donc on ne peut pas s'y fier entre deux itérations de la boucle.
+    let currentPhotos = [...photos];
+    let currentVideos = [...videos];
+
     for (const file of files) {
       const isVideo = file.type.startsWith("video");
       const maxMB = isVideo ? 50 : 8;
@@ -40,10 +46,11 @@ export function MediaUploader({ photos, videos, onChange }: Props) {
         });
 
         if (result.type === "video") {
-          onChange({ photos, videos: [...videos, result.url] });
+          currentVideos = [...currentVideos, result.url];
         } else {
-          onChange({ photos: [...photos, result.url], videos });
+          currentPhotos = [...currentPhotos, result.url];
         }
+        onChange({ photos: currentPhotos, videos: currentVideos });
       } catch (err: any) {
         setError(err.message || "Échec de l'envoi.");
       } finally {

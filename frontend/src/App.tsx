@@ -29,6 +29,7 @@ import { DashboardProfilePage } from "./pages/DashboardProfilePage";
 import { AdminOverviewPage } from "./pages/admin/AdminOverviewPage";
 import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
 import { AdminListingsPage } from "./pages/admin/AdminListingsPage";
+import { AdminKycPage } from "./pages/admin/AdminKycPage";
 import { AdminReportsPage } from "./pages/admin/AdminReportsPage";
 
 export default function App() {
@@ -59,6 +60,7 @@ export default function App() {
             <Route path="dashboard" element={<DashboardLayout />}>
               <Route index element={<DashboardProfilePage />} />
               <Route path="listings" element={<DashboardListingsPage />} />
+              <Route path="listings/:id/edit" element={<PublishPage />} />
               <Route path="reservations" element={<ReservationsPage />} />
               <Route path="messages" element={<MessagesPage />} />
               <Route path="profile" element={<DashboardProfilePage />} />
@@ -68,6 +70,7 @@ export default function App() {
               <Route index element={<AdminOverviewPage />} />
               <Route path="users" element={<AdminUsersPage />} />
               <Route path="listings" element={<AdminListingsPage />} />
+              <Route path="kyc" element={<AdminKycPage />} />
               <Route path="reservations" element={<ReservationsPage />} />
               <Route path="reports" element={<AdminReportsPage />} />
             </Route>

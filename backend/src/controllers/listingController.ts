@@ -88,7 +88,7 @@ export async function getListings(req: AuthRequest, res: Response, next: NextFun
         .sort(sortMap[sort] || sortMap.recent)
         .skip((pageNum - 1) * limitNum)
         .limit(limitNum)
-        .populate("owner", "name avatarUrl"),
+        .populate("owner", "name avatarUrl kycStatus"),
       Listing.countDocuments(filter),
     ]);
 
@@ -119,7 +119,7 @@ export async function getListingById(
       req.params.id,
       { $inc: { viewsCount: 1 } },
       { new: true }
-    ).populate("owner", "name avatarUrl phone");
+    ).populate("owner", "name avatarUrl phone kycStatus");
 
     if (!listing) throw new AppError("Annonce introuvable.", 404);
 

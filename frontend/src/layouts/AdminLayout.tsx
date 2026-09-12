@@ -21,6 +21,7 @@ export function AdminLayout() {
           <NavLink to="/admin" end className={linkClass}>Vue d'ensemble</NavLink>
           <NavLink to="/admin/users" className={linkClass}>Utilisateurs</NavLink>
           <NavLink to="/admin/listings" className={linkClass}>Annonces</NavLink>
+          <NavLink to="/admin/kyc" className={linkClass}>Vérifications</NavLink>
           <NavLink to="/admin/reports" className={linkClass}>Signalements</NavLink>
         </nav>
         <div>
