@@ -19,6 +19,7 @@ export function AdminLayout() {
       <div className="mt-6 grid gap-8 md:grid-cols-[200px_1fr]">
         <nav className="space-y-1">
           <NavLink to="/admin" end className={linkClass}>Vue d'ensemble</NavLink>
+          <NavLink to="/admin/banners" className={linkClass}>Bannières</NavLink>
           <NavLink to="/admin/users" className={linkClass}>Utilisateurs</NavLink>
           <NavLink to="/admin/listings" className={linkClass}>Annonces</NavLink>
           <NavLink to="/admin/kyc" className={linkClass}>Vérifications</NavLink>

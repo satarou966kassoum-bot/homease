@@ -78,7 +78,7 @@ export function Navbar() {
           </button>
         </div>
 
-        <Link to="/" className="justify-self-center font-display text-base font-semibold text-lagoon-500">
+        <Link to="/" className="justify-self-center font-display text-2xl font-semibold text-lagoon-500">
           HomeEase
         </Link>
 

@@ -30,6 +30,7 @@ import { DashboardProfilePage } from "./pages/DashboardProfilePage";
 import { DashboardStatsPage } from "./pages/DashboardStatsPage";
 
 import { AdminOverviewPage } from "./pages/admin/AdminOverviewPage";
+import { AdminBannersPage } from "./pages/admin/AdminBannersPage";
 import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
 import { AdminListingsPage } from "./pages/admin/AdminListingsPage";
 import { AdminKycPage } from "./pages/admin/AdminKycPage";
@@ -74,6 +75,7 @@ export default function App() {
 
             <Route path="admin" element={<AdminLayout />}>
               <Route index element={<AdminOverviewPage />} />
+              <Route path="banners" element={<AdminBannersPage />} />
               <Route path="users" element={<AdminUsersPage />} />
               <Route path="listings" element={<AdminListingsPage />} />
               <Route path="kyc" element={<AdminKycPage />} />

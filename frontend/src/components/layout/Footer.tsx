@@ -1,37 +1,63 @@
 import { Link } from "react-router-dom";
 
+const columns = [
+  {
+    title: "Explorer",
+    links: [
+      { to: "/rent", label: "Louer" },
+      { to: "/buy", label: "Acheter" },
+      { to: "/land", label: "Parcelles" },
+      { to: "/publish", label: "Publier une annonce" },
+    ],
+  },
+  {
+    title: "Assistance",
+    links: [
+      { to: "/faq", label: "FAQ" },
+      { to: "/support", label: "Support" },
+      { to: "/contact", label: "Nous contacter" },
+    ],
+  },
+  {
+    title: "Entreprise",
+    links: [
+      { to: "/about", label: "À propos" },
+      { to: "/terms", label: "Mentions légales" },
+      { to: "/privacy", label: "Confidentialité" },
+    ],
+  },
+];
+
 export function Footer() {
   return (
-    <footer className="mt-4 border-t border-sand-200 bg-white">
-      <div className="page-container py-10">
-        <p className="font-display text-lg font-semibold text-lagoon-500">HomeEase</p>
-        <p className="mt-2 max-w-xs text-sm text-ink-300">
-          Trouvez et publiez facilement des biens immobiliers au Bénin.
-        </p>
+    <footer className="mt-4 bg-lagoon-500 text-sand-100">
+      <div className="page-container py-12">
+        <div className="grid gap-10 sm:grid-cols-[1.3fr_1fr_1fr_1fr]">
+          <div>
+            <p className="font-display text-xl font-semibold text-white">HomeEase</p>
+            <p className="mt-2 max-w-xs text-sm text-sand-200">
+              Trouvez et publiez facilement des biens immobiliers au Bénin.
+            </p>
+          </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
-          <div>
-            <p className="mb-2 text-sm font-medium text-ink-500">Explorer</p>
-            <ul className="space-y-1.5 text-sm text-ink-300">
-              <li><Link to="/rent" className="hover:text-lagoon-500">Louer</Link></li>
-              <li><Link to="/buy" className="hover:text-lagoon-500">Acheter</Link></li>
-              <li><Link to="/land" className="hover:text-lagoon-500">Parcelles</Link></li>
-            </ul>
-          </div>
-          <div>
-            <p className="mb-2 text-sm font-medium text-ink-500">Entreprise</p>
-            <ul className="space-y-1.5 text-sm text-ink-300">
-              <li><Link to="/about" className="hover:text-lagoon-500">À propos</Link></li>
-              <li><Link to="/contact" className="hover:text-lagoon-500">Contact</Link></li>
-              <li><Link to="/terms" className="hover:text-lagoon-500">Conditions</Link></li>
-              <li><Link to="/privacy" className="hover:text-lagoon-500">Confidentialité</Link></li>
-            </ul>
-          </div>
+          {columns.map((col) => (
+            <div key={col.title}>
+              <p className="mb-3 text-sm font-semibold text-white">{col.title}</p>
+              <ul className="space-y-2 text-sm text-sand-200">
+                {col.links.map((l) => (
+                  <li key={l.label}>
+                    <Link to={l.to} className="hover:text-white">{l.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        <p className="mt-8 text-xs text-ink-300">
-          © {new Date().getFullYear()} HomeEase.
-        </p>
+        <div className="mt-10 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-sand-200 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} HomeEase. Tous droits réservés.</p>
+          <p>Fait avec soin pour le marché béninois 🇧🇯</p>
+        </div>
       </div>
     </footer>
   );

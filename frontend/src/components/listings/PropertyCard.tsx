@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, BedDouble, Bath, Ruler, PlayCircle } from "lucide-react";
 import { Listing } from "../../types";
@@ -28,6 +28,17 @@ export function PropertyCard({ listing }: { listing: Listing }) {
     if (!el) return;
     setActiveIndex(Math.round(el.scrollLeft / el.offsetWidth));
   }
+
+  useEffect(() => {
+    if (photos.length <= 1) return;
+    const timer = setTimeout(() => {
+      const next = (activeIndex + 1) % photos.length;
+      const el = scrollRef.current;
+      if (el) el.scrollTo({ left: next * el.offsetWidth, behavior: "smooth" });
+      setActiveIndex(next);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [activeIndex, photos.length]);
 
   return (
     <Link

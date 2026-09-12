@@ -11,6 +11,7 @@ import {
   getReports,
   updateReportStatus,
 } from "../controllers/adminController";
+import { getAllBanners, createBanner, updateBanner, deleteBanner } from "../controllers/bannerController";
 import { protect, requireRole } from "../middlewares/auth";
 
 const router = Router();
@@ -32,5 +33,10 @@ router.put("/reports/:id", updateReportStatus);
 
 router.get("/kyc", getKycSubmissions);
 router.put("/kyc/:id", updateKycStatus);
+
+router.get("/banners", getAllBanners);
+router.post("/banners", createBanner);
+router.put("/banners/:id", updateBanner);
+router.delete("/banners/:id", deleteBanner);
 
 export default router;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShieldCheck, Clock, MessageCircle, Search as SearchIcon } from "lucide-react";
 import { HeroSearchBar } from "../components/listings/HeroSearchBar";
+import { HeroBannerCarousel } from "../components/listings/HeroBannerCarousel";
 import { PropertyCard } from "../components/listings/PropertyCard";
 import { SkeletonCard } from "../components/ui/SkeletonCard";
 import { EmptyState } from "../components/ui/EmptyState";
@@ -52,8 +53,10 @@ const advantages = [
 export function HomePage() {
   const navigate = useNavigate();
   const [listings, setListings] = useState<Listing[]>([]);
+  const [banners, setBanners] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [transaction, setTransaction] = useState("");
+  const [zone, setZone] = useState("");
 
   useEffect(() => {
     api
@@ -61,6 +64,11 @@ export function HomePage() {
       .then((res) => setListings(res.data.data.listings))
       .catch(() => setListings([]))
       .finally(() => setIsLoading(false));
+
+    api
+      .get("/banners")
+      .then((res) => setBanners(res.data.data.banners))
+      .catch(() => setBanners([]));
   }, []);
 
   function handleTransactionChange(value: string) {
@@ -68,18 +76,27 @@ export function HomePage() {
     if (value) navigate(`/search?transactionType=${value}`);
   }
 
+  function handleZoneChange(value: string) {
+    setZone(value);
+    if (value) navigate(`/search?city=${encodeURIComponent(value)}`);
+  }
+
   return (
     <div>
-      {/* Hero */}
+      {/* Hero — bannière pilotée depuis l'admin, ou texte par défaut */}
       <section className="bg-lagoon-500">
-        <div className="page-container pb-20 pt-14 sm:pb-28 sm:pt-20">
-          <h1 className="max-w-xl font-display text-4xl font-medium leading-[1.1] text-white sm:text-5xl">
-            Trouvez votre prochain chez-vous.
-          </h1>
-          <p className="mt-4 max-w-md text-base text-lagoon-100">
-            Explorez des logements, terrains et biens immobiliers au Bénin.
-          </p>
-        </div>
+        {banners.length > 0 ? (
+          <HeroBannerCarousel banners={banners} />
+        ) : (
+          <div className="page-container pb-20 pt-14 sm:pb-28 sm:pt-20">
+            <h1 className="max-w-xl font-display text-4xl font-medium leading-[1.1] text-white sm:text-5xl">
+              Trouvez votre prochain chez-vous.
+            </h1>
+            <p className="mt-4 max-w-md text-base text-sand-100">
+              Explorez des logements, terrains et biens immobiliers au Bénin.
+            </p>
+          </div>
+        )}
       </section>
 
       {/* Search card — chevauche le hero */}
@@ -87,16 +104,15 @@ export function HomePage() {
         <HeroSearchBar />
       </div>
 
-      {/* Catégories populaires — menu déroulant de transaction */}
+      {/* Que recherchez-vous ? */}
       <section className="section page-container">
-        <h2 className="text-2xl font-medium">Catégories populaires</h2>
-        <p className="mt-1 text-sm text-ink-300">Que souhaitez-vous faire ?</p>
+        <h2 className="text-2xl font-medium">Que recherchez-vous ?</h2>
         <select
           value={transaction}
           onChange={(e) => handleTransactionChange(e.target.value)}
           className="input-field mt-4 text-base font-medium"
         >
-          <option value="">Choisissez une catégorie</option>
+          <option value="">Choisissez un objectif</option>
           {transactionOptions.map((t) => (
             <option key={t.value} value={t.value}>{t.label}</option>
           ))}
@@ -134,20 +150,19 @@ export function HomePage() {
         )}
       </section>
 
-      {/* Zones populaires */}
+      {/* Zones populaires — menu déroulant */}
       <section className="section page-container">
         <h2 className="text-2xl font-medium">Zones populaires</h2>
-        <div className="mt-6 flex flex-wrap gap-2.5">
-          {zones.map((zone) => (
-            <Link
-              key={zone}
-              to={`/search?city=${encodeURIComponent(zone)}`}
-              className="rounded-full border border-sand-200 bg-white px-4 py-2.5 text-sm font-medium hover:border-lagoon-500"
-            >
-              {zone}
-            </Link>
+        <select
+          value={zone}
+          onChange={(e) => handleZoneChange(e.target.value)}
+          className="input-field mt-4 text-base font-medium"
+        >
+          <option value="">Choisissez une zone</option>
+          {zones.map((z) => (
+            <option key={z} value={z}>{z}</option>
           ))}
-        </div>
+        </select>
       </section>
 
       {/* Pourquoi HomeEase */}
@@ -173,7 +188,7 @@ export function HomePage() {
             <p className="font-display text-xl font-medium text-white">
               Vous avez un bien à louer ou à vendre ?
             </p>
-            <p className="mt-1 text-sm text-lagoon-100">
+            <p className="mt-1 text-sm text-sand-100">
               Publiez votre annonce gratuitement et touchez des milliers de personnes.
             </p>
           </div>
