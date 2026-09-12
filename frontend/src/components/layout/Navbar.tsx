@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Home, Search, PlusCircle, Heart, User as UserIcon, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { NotificationBell } from "./NotificationBell";
 import { MobileMenu } from "./MobileMenu";
@@ -111,56 +111,6 @@ export function Navbar() {
       </header>
 
       <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
-
-      {/* Navigation basse mobile */}
-      <nav className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-around border-t border-sand-200 bg-white py-2 shadow-sheet md:hidden">
-        <MobileTab to="/" icon={<Home size={20} />} label="Accueil" end />
-        <MobileTab to="/search" icon={<Search size={20} />} label="Rechercher" />
-        <MobileTab to="/publish" icon={<PlusCircle size={20} />} label="Publier" />
-        <MobileTab to="/favorites" icon={<Heart size={20} />} label="Favoris" />
-        <MobileTab
-          to={user ? (user.role === "admin" ? "/admin" : "/dashboard/profile") : "/login"}
-          icon={<UserIcon size={20} />}
-          label="Profil"
-        />
-      </nav>
     </>
-  );
-}
-
-function MobileTab({
-  to,
-  icon,
-  label,
-  end,
-}: {
-  to: string;
-  icon: React.ReactNode;
-  label: string;
-  end?: boolean;
-}) {
-  return (
-    <NavLink
-      to={to}
-      end={end}
-      className={({ isActive }) =>
-        `flex flex-col items-center gap-1 px-2 text-[11px] font-medium transition-colors ${
-          isActive ? "text-lagoon-500" : "text-ink-300"
-        }`
-      }
-    >
-      {({ isActive }) => (
-        <>
-          <span
-            className={`flex h-8 w-12 items-center justify-center rounded-full transition-colors ${
-              isActive ? "bg-lagoon-50" : ""
-            }`}
-          >
-            {icon}
-          </span>
-          {label}
-        </>
-      )}
-    </NavLink>
   );
 }

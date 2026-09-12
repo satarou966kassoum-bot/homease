@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export function Footer() {
   return (
-    <footer className="mb-14 mt-4 border-t border-sand-200 bg-white md:mb-0">
+    <footer className="mt-4 border-t border-sand-200 bg-white">
       <div className="page-container py-10">
         <p className="font-display text-lg font-semibold text-lagoon-500">HomeEase</p>
         <p className="mt-2 max-w-xs text-sm text-ink-300">

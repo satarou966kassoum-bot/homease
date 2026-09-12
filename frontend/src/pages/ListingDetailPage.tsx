@@ -152,7 +152,7 @@ export function ListingDetailPage() {
   const canReserve = listing.transactionType === "reservation" || listing.transactionType === "location";
 
   return (
-    <div className="page-container py-6 pb-28 sm:py-10 md:pb-10">
+    <div className="page-container py-6 pb-20 sm:py-10 md:pb-10">
       {/* Galerie défilable (swipe) style e-commerce */}
       {media.length > 0 ? (
         <>
@@ -376,7 +376,7 @@ export function ListingDetailPage() {
 
       {/* Barre d'action flottante mobile — style fiche produit e-commerce */}
       {user && (
-        <div className="fixed inset-x-0 bottom-16 z-20 flex gap-2 border-t border-sand-200 bg-white/95 p-3 backdrop-blur md:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-20 flex gap-2 border-t border-sand-200 bg-white/95 p-3 backdrop-blur md:hidden">
           <div className="flex flex-1 flex-col justify-center">
             <p className="text-sm font-semibold text-lagoon-600">
               {formatFCFA(listing.price)}

@@ -28,6 +28,7 @@ interface Props {
 // Ordonné par importance : le cœur immobilier d'abord, puis les futures
 // verticales du marketplace HomeEase.
 const links = [
+  { to: "/", label: "Accueil", icon: Home, live: true },
   { to: "/search?category=maison", label: "Maisons", icon: Home, live: true },
   { to: "/search?category=appartement", label: "Appartements", icon: Building2, live: true },
   { to: "/search?category=villa", label: "Villas", icon: Landmark, live: true },
