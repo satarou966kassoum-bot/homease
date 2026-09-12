@@ -21,6 +21,8 @@ import {
   TermsPage,
   PrivacyPage,
   ForgotPasswordPage,
+  FAQPage,
+  SupportPage,
 } from "./pages/StaticPages";
 
 import { DashboardListingsPage } from "./pages/DashboardListingsPage";
@@ -56,6 +58,8 @@ export default function App() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="terms" element={<TermsPage />} />
             <Route path="privacy" element={<PrivacyPage />} />
+            <Route path="faq" element={<FAQPage />} />
+            <Route path="support" element={<SupportPage />} />
             <Route path="a-venir" element={<ComingSoonPage />} />
 
             <Route path="dashboard" element={<DashboardLayout />}>

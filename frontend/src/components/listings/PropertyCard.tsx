@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, BedDouble, Bath, Ruler, PlayCircle } from "lucide-react";
 import { Listing } from "../../types";
@@ -14,9 +15,19 @@ const badgeVariant: Record<string, "location" | "vente" | "reservation"> = {
 
 export function PropertyCard({ listing }: { listing: Listing }) {
   const { isFavorite, toggle, isLoggedIn } = useFavorite(listing._id);
-  const hasVideo = !listing.photos?.[0] && listing.videos?.[0];
+  const photos = listing.photos || [];
+  const hasVideoOnly = photos.length === 0 && listing.videos?.[0];
   const isNew =
     Date.now() - new Date(listing.createdAt).getTime() < 1000 * 60 * 60 * 24 * 7;
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  function handleScroll() {
+    const el = scrollRef.current;
+    if (!el) return;
+    setActiveIndex(Math.round(el.scrollLeft / el.offsetWidth));
+  }
 
   return (
     <Link
@@ -24,19 +35,44 @@ export function PropertyCard({ listing }: { listing: Listing }) {
       className="card group block overflow-hidden animate-fade-up transition-shadow hover:shadow-elevated"
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-sand-100">
-        {hasVideo ? (
+        {hasVideoOnly ? (
           <>
             <video src={listing.videos[0]} className="h-full w-full object-cover" muted />
             <span className="absolute inset-0 flex items-center justify-center bg-black/10">
               <PlayCircle size={36} className="text-white drop-shadow" />
             </span>
           </>
+        ) : photos.length > 1 ? (
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="flex h-full w-full snap-x snap-mandatory overflow-x-auto"
+          >
+            {photos.map((url, i) => (
+              <div key={url + i} className="h-full w-full flex-shrink-0 snap-center">
+                <ImageWithFallback src={url} alt={`${listing.title} — ${i + 1}`} className="h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
         ) : (
           <ImageWithFallback
-            src={listing.photos?.[0]}
+            src={photos[0]}
             alt={listing.title}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
+        )}
+
+        {photos.length > 1 && (
+          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+            {photos.map((_, i) => (
+              <span
+                key={i}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === activeIndex ? "w-4 bg-white" : "w-1.5 bg-white/60"
+                }`}
+              />
+            ))}
+          </div>
         )}
 
         <div className="absolute left-3 top-3 flex gap-1.5">

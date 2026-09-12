@@ -67,6 +67,25 @@ export function ListingDetailPage() {
       .finally(() => setIsLoading(false));
   }, [id]);
 
+  // Défilement automatique de la galerie (comme une fiche produit) — se met en
+  // pause tant qu'une vidéo est affichée, pour ne pas couper sa lecture.
+  useEffect(() => {
+    if (!listing) return;
+    const photosLen = (listing.photos || []).length;
+    const videosLen = (listing.videos || []).length;
+    const total = photosLen + videosLen;
+    if (total <= 1) return;
+
+    const isCurrentVideo = activeIndex >= photosLen;
+    if (isCurrentVideo) return;
+
+    const timer = setTimeout(() => {
+      scrollToIndex((activeIndex + 1) % total);
+    }, 4500);
+
+    return () => clearTimeout(timer);
+  }, [listing, activeIndex]);
+
   if (isLoading) {
     return <div className="page-container py-16 text-center text-ink-300">Chargement...</div>;
   }

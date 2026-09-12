@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { NotificationBell } from "./NotificationBell";
 import { MobileMenu } from "./MobileMenu";
+import { AvatarMenu } from "./AvatarMenu";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `text-sm font-medium transition-colors ${
@@ -11,7 +12,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   }`;
 
 export function Navbar() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -50,15 +51,7 @@ export function Navbar() {
           <div className="flex items-center gap-3">
             {user && <NotificationBell />}
             {user ? (
-              <Link
-                to={user.role === "admin" ? "/admin" : "/dashboard"}
-                className="flex items-center gap-2 rounded border border-sand-200 px-4 py-2 text-sm font-medium text-ink-500 hover:border-lagoon-500"
-              >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-lagoon-50 text-lagoon-600">
-                  {user.name.charAt(0).toUpperCase()}
-                </span>
-                Tableau de bord
-              </Link>
+              <AvatarMenu />
             ) : (
               <>
                 <Link to="/login" className="text-sm font-medium text-ink-500 hover:text-lagoon-500">
@@ -68,11 +61,6 @@ export function Navbar() {
                   Créer un compte
                 </Link>
               </>
-            )}
-            {user && (
-              <button onClick={logout} className="text-sm text-ink-300 hover:text-clay-500">
-                Déconnexion
-              </button>
             )}
           </div>
         </div>
@@ -97,11 +85,7 @@ export function Navbar() {
         {user ? (
           <div className="flex items-center justify-end gap-2">
             <NotificationBell />
-            <Link to={user.role === "admin" ? "/admin" : "/dashboard/profile"}>
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-lagoon-50 text-sm font-semibold text-lagoon-600">
-                {user.name.charAt(0).toUpperCase()}
-              </span>
-            </Link>
+            <AvatarMenu />
           </div>
         ) : (
           <Link to="/login" className="justify-self-end text-sm font-medium text-lagoon-500">
