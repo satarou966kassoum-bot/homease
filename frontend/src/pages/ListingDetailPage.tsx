@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   BedDouble,
@@ -13,7 +13,7 @@ import {
 import { api } from "../services/api";
 import { Listing } from "../types";
 import { formatFCFA, categoryLabels, transactionLabels } from "../utils/format";
-import { ListingCard } from "../components/listings/ListingCard";
+import { PropertyCard } from "../components/listings/PropertyCard";
 import { useAuth } from "../contexts/AuthContext";
 import { useFavorite } from "../hooks/useFavorite";
 
@@ -24,6 +24,11 @@ const reportReasons = [
   { value: "arnaque", label: "Arnaque" },
   { value: "autre", label: "Autre" },
 ];
+
+interface MediaItem {
+  url: string;
+  type: "image" | "video";
+}
 
 export function ListingDetailPage() {
   const { id } = useParams();
@@ -45,7 +50,9 @@ export function ListingDetailPage() {
   const [reportReason, setReportReason] = useState("fausse_annonce");
   const [reportStatus, setReportStatus] = useState("");
 
-  const [activeMedia, setActiveMedia] = useState<{ url: string; type: "image" | "video" } | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
   const favorite = useFavorite(id || "");
 
   useEffect(() => {
@@ -55,20 +62,17 @@ export function ListingDetailPage() {
       .then((res) => {
         setListing(res.data.data.listing);
         setSimilar(res.data.data.similar);
-        const l = res.data.data.listing;
-        if (l.photos?.[0]) setActiveMedia({ url: l.photos[0], type: "image" });
-        else if (l.videos?.[0]) setActiveMedia({ url: l.videos[0], type: "video" });
       })
       .finally(() => setIsLoading(false));
   }, [id]);
 
   if (isLoading) {
-    return <div className="mx-auto max-w-5xl px-6 py-16 text-center text-ink-300">Chargement...</div>;
+    return <div className="page-container py-16 text-center text-ink-300">Chargement...</div>;
   }
 
   if (!listing) {
     return (
-      <div className="mx-auto max-w-5xl px-6 py-16 text-center">
+      <div className="page-container py-16 text-center">
         <p className="text-ink-300">Cette annonce est introuvable ou a été retirée.</p>
         <Link to="/search" className="btn-primary mt-4 inline-flex">
           Voir d'autres annonces
@@ -77,8 +81,32 @@ export function ListingDetailPage() {
     );
   }
 
+  const media: MediaItem[] = [
+    ...(listing.photos || []).map((url) => ({ url, type: "image" as const })),
+    ...(listing.videos || []).map((url) => ({ url, type: "video" as const })),
+  ];
+
   const owner = typeof listing.owner === "object" ? listing.owner : null;
   const ownerId = owner ? (owner as any)._id : null;
+
+  function scrollToIndex(index: number) {
+    const container = galleryRef.current;
+    if (!container) return;
+    container.scrollTo({ left: index * container.offsetWidth, behavior: "smooth" });
+  }
+
+  function handleGalleryScroll() {
+    const container = galleryRef.current;
+    if (!container) return;
+    const index = Math.round(container.scrollLeft / container.offsetWidth);
+    setActiveIndex(index);
+  }
+
+  function focusActions(reserve: boolean) {
+    if (reserve) setShowReserve(true);
+    else setShowContact(true);
+    actionsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 
   async function handleSendContact() {
     if (!ownerId || !contactMessage.trim()) return;
@@ -120,55 +148,74 @@ export function ListingDetailPage() {
     }
   }
 
-  return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
-      <div className="aspect-video w-full overflow-hidden rounded-lg bg-sand-100">
-        {activeMedia ? (
-          activeMedia.type === "video" ? (
-            <video src={activeMedia.url} controls className="h-full w-full object-cover" />
-          ) : (
-            <img src={activeMedia.url} alt={listing.title} className="h-full w-full object-cover" />
-          )
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-ink-300">
-            <ImageOff size={40} />
-          </div>
-        )}
-      </div>
+  const canReserve = listing.transactionType === "reservation" || listing.transactionType === "location";
 
-      {(listing.photos.length + listing.videos.length > 1) && (
-        <div className="mt-3 flex gap-2 overflow-x-auto">
-          {listing.photos.map((url) => (
-            <button
-              key={url}
-              onClick={() => setActiveMedia({ url, type: "image" })}
-              className={`h-16 w-16 flex-shrink-0 overflow-hidden rounded border-2 ${
-                activeMedia?.url === url ? "border-lagoon-500" : "border-transparent"
-              }`}
-            >
-              <img src={url} alt="" className="h-full w-full object-cover" />
-            </button>
-          ))}
-          {listing.videos.map((url) => (
-            <button
-              key={url}
-              onClick={() => setActiveMedia({ url, type: "video" })}
-              className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded border-2 bg-ink-500 ${
-                activeMedia?.url === url ? "border-lagoon-500" : "border-transparent"
-              }`}
-            >
-              <video src={url} className="h-full w-full object-cover" muted />
-              <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-white">
-                ▶
-              </span>
-            </button>
-          ))}
+  return (
+    <div className="page-container py-6 pb-28 sm:py-10 md:pb-10">
+      {/* Galerie défilable (swipe) style e-commerce */}
+      {media.length > 0 ? (
+        <>
+          <div
+            ref={galleryRef}
+            onScroll={handleGalleryScroll}
+            className="flex aspect-[4/3] w-full snap-x snap-mandatory overflow-x-auto rounded-xl bg-sand-100 sm:aspect-video"
+          >
+            {media.map((item, i) => (
+              <div key={item.url + i} className="w-full flex-shrink-0 snap-center">
+                {item.type === "video" ? (
+                  <video src={item.url} controls className="h-full w-full object-cover" />
+                ) : (
+                  <img src={item.url} alt={`${listing.title} — photo ${i + 1}`} className="h-full w-full object-cover" />
+                )}
+              </div>
+            ))}
+          </div>
+
+          {media.length > 1 && (
+            <div className="mt-2 flex justify-center gap-1.5">
+              {media.map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === activeIndex ? "w-5 bg-lagoon-500" : "w-1.5 bg-sand-200"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
+          {media.length > 1 && (
+            <div className="mt-3 flex gap-2 overflow-x-auto">
+              {media.map((item, i) => (
+                <button
+                  key={item.url + i}
+                  onClick={() => scrollToIndex(i)}
+                  className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 bg-ink-500 ${
+                    i === activeIndex ? "border-lagoon-500" : "border-transparent"
+                  }`}
+                >
+                  {item.type === "video" ? (
+                    <>
+                      <video src={item.url} className="h-full w-full object-cover" muted />
+                      <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-white">▶</span>
+                    </>
+                  ) : (
+                    <img src={item.url} alt="" className="h-full w-full object-cover" />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="flex aspect-video w-full items-center justify-center rounded-xl bg-sand-100 text-ink-300">
+          <ImageOff size={40} />
         </div>
       )}
 
       <div className="mt-6 grid gap-10 md:grid-cols-3">
         <div className="md:col-span-2">
-          <span className="inline-block rounded bg-lagoon-50 px-2 py-1 text-xs font-medium text-lagoon-600">
+          <span className="inline-block rounded-full bg-lagoon-50 px-3 py-1 text-xs font-medium text-lagoon-600">
             {transactionLabels[listing.transactionType]} · {categoryLabels[listing.category]}
           </span>
 
@@ -214,9 +261,7 @@ export function ListingDetailPage() {
               </button>
             )}
             <button
-              onClick={() => {
-                navigator.clipboard?.writeText(window.location.href);
-              }}
+              onClick={() => navigator.clipboard?.writeText(window.location.href)}
               className="btn-ghost"
             >
               <Share2 size={16} /> Partager
@@ -246,7 +291,7 @@ export function ListingDetailPage() {
           )}
         </div>
 
-        <aside className="h-fit rounded-lg border border-sand-200 bg-white p-5 shadow-card">
+        <aside ref={actionsRef} className="card h-fit p-5">
           <p className="text-2xl font-semibold text-lagoon-600">
             {formatFCFA(listing.price)}
             {listing.transactionType === "location" && (
@@ -284,7 +329,7 @@ export function ListingDetailPage() {
                 </div>
               )}
 
-              {(listing.transactionType === "reservation" || listing.transactionType === "location") && (
+              {canReserve && (
                 <>
                   <button onClick={() => setShowReserve((v) => !v)} className="btn-accent mt-3 w-full">
                     Réserver
@@ -319,9 +364,31 @@ export function ListingDetailPage() {
           <h2 className="text-xl font-medium">Annonces similaires</h2>
           <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {similar.map((s) => (
-              <ListingCard key={s._id} listing={s} />
+              <PropertyCard key={s._id} listing={s} />
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Barre d'action flottante mobile — style fiche produit e-commerce */}
+      {user && (
+        <div className="fixed inset-x-0 bottom-16 z-20 flex gap-2 border-t border-sand-200 bg-white/95 p-3 backdrop-blur md:hidden">
+          <div className="flex flex-1 flex-col justify-center">
+            <p className="text-sm font-semibold text-lagoon-600">
+              {formatFCFA(listing.price)}
+              {listing.transactionType === "location" && (
+                <span className="text-xs font-normal text-ink-300"> /mois</span>
+              )}
+            </p>
+          </div>
+          <button onClick={() => focusActions(false)} className="btn-ghost px-4 py-2.5 text-sm">
+            Contacter
+          </button>
+          {canReserve && (
+            <button onClick={() => focusActions(true)} className="btn-accent px-4 py-2.5 text-sm">
+              Réserver
+            </button>
+          )}
         </div>
       )}
     </div>

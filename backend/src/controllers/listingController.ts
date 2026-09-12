@@ -51,7 +51,15 @@ export async function getListings(req: AuthRequest, res: Response, next: NextFun
 
     const filter: Record<string, any> = { status: "approuvee" };
 
-    if (q) filter.$text = { $search: q };
+    if (q) {
+      const re = new RegExp(q, "i");
+      filter.$or = [
+        { title: re },
+        { description: re },
+        { city: re },
+        { neighborhood: re },
+      ];
+    }
     if (category) filter.category = category;
     if (transactionType) filter.transactionType = transactionType;
     if (city) filter.city = new RegExp(city, "i");

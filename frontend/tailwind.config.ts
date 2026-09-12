@@ -46,10 +46,10 @@ export default {
         sans: ["Inter", "system-ui", "sans-serif"],
       },
       borderRadius: {
-        sm: "6px",
-        DEFAULT: "10px",
-        lg: "16px",
-        xl: "22px",
+        sm: "8px",
+        DEFAULT: "14px",
+        lg: "20px",
+        xl: "28px",
       },
       boxShadow: {
         card: "0 1px 2px rgba(27,36,32,0.06), 0 1px 0 rgba(27,36,32,0.04)",

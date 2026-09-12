@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { SlidersHorizontal, ArrowUpDown } from "lucide-react";
+import { SlidersHorizontal, ArrowUpDown, Search } from "lucide-react";
 import { PropertyCard } from "../components/listings/PropertyCard";
 import { SkeletonCard } from "../components/ui/SkeletonCard";
 import { EmptyState } from "../components/ui/EmptyState";
@@ -23,9 +23,10 @@ export function SearchPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
+  const [queryDraft, setQueryDraft] = useState(searchParams.get("q") || "");
 
   const sort = searchParams.get("sort") || "recent";
-  const activeFilterCount = ["category", "city", "minPrice", "maxPrice", "bedrooms", "furnished"].filter(
+  const activeFilterCount = ["transactionType", "category", "city", "minPrice", "maxPrice", "bedrooms", "furnished"].filter(
     (k) => searchParams.get(k)
   ).length;
 
@@ -62,6 +63,7 @@ export function SearchPage() {
   }
 
   const currentFilters: FilterValues = {
+    transactionType: searchParams.get("transactionType") || "",
     category: searchParams.get("category") || "",
     city: searchParams.get("city") || "",
     minPrice: searchParams.get("minPrice") || "",
@@ -77,8 +79,20 @@ export function SearchPage() {
         {isLoading ? "Recherche en cours..." : `${total} bien${total > 1 ? "s" : ""} disponible${total > 1 ? "s" : ""}`}
       </p>
 
+      {/* Barre de recherche compacte */}
+      <div className="mt-5 flex items-center gap-2 rounded-lg border border-sand-200 bg-white px-3">
+        <Search size={17} className="shrink-0 text-ink-300" />
+        <input
+          value={queryDraft}
+          onChange={(e) => setQueryDraft(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && updateParams({ q: queryDraft })}
+          placeholder="Rechercher une ville, un quartier, un bien..."
+          className="w-full bg-transparent py-3 text-base text-ink-500 placeholder:text-ink-300 focus:outline-none"
+        />
+      </div>
+
       {/* Barre de contrôle : Filtres / Trier */}
-      <div className="mt-5 flex gap-3">
+      <div className="mt-3 flex gap-3">
         <button
           onClick={() => setFilterOpen(true)}
           className="btn-ghost relative flex-1 sm:flex-none"

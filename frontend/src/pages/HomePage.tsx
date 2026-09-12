@@ -1,32 +1,18 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  ShieldCheck,
-  Clock,
-  MessageCircle,
-  Search as SearchIcon,
-  Building2,
-  Home as HomeIcon,
-  Trees,
-  Landmark,
-  Sofa,
-  DoorOpen,
-} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ShieldCheck, Clock, MessageCircle, Search as SearchIcon } from "lucide-react";
 import { HeroSearchBar } from "../components/listings/HeroSearchBar";
 import { PropertyCard } from "../components/listings/PropertyCard";
-import { CategoryCard } from "../components/listings/CategoryCard";
 import { SkeletonCard } from "../components/ui/SkeletonCard";
 import { EmptyState } from "../components/ui/EmptyState";
 import { api } from "../services/api";
 import { Listing } from "../types";
 
-const categories = [
-  { label: "Maisons", to: "/rent", icon: HomeIcon },
-  { label: "Appartements", to: "/search?category=appartement", icon: Building2 },
-  { label: "Parcelles", to: "/land", icon: Trees },
-  { label: "Villas", to: "/search?category=villa", icon: Landmark },
-  { label: "Bureaux", to: "/search?category=bureau", icon: DoorOpen },
-  { label: "Meublés", to: "/search?category=meuble", icon: Sofa },
+const transactionOptions = [
+  { value: "location", label: "Location" },
+  { value: "vente", label: "Achat" },
+  { value: "reservation", label: "Réservation" },
+  { value: "visite", label: "Visite" },
 ];
 
 const zones = [
@@ -64,8 +50,10 @@ const advantages = [
 ];
 
 export function HomePage() {
+  const navigate = useNavigate();
   const [listings, setListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [transaction, setTransaction] = useState("");
 
   useEffect(() => {
     api
@@ -74,6 +62,11 @@ export function HomePage() {
       .catch(() => setListings([]))
       .finally(() => setIsLoading(false));
   }, []);
+
+  function handleTransactionChange(value: string) {
+    setTransaction(value);
+    if (value) navigate(`/search?transactionType=${value}`);
+  }
 
   return (
     <div>
@@ -94,14 +87,20 @@ export function HomePage() {
         <HeroSearchBar />
       </div>
 
-      {/* Catégories populaires — grille 2x2 sur mobile */}
+      {/* Catégories populaires — menu déroulant de transaction */}
       <section className="section page-container">
         <h2 className="text-2xl font-medium">Catégories populaires</h2>
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {categories.map((c) => (
-            <CategoryCard key={c.label} {...c} />
+        <p className="mt-1 text-sm text-ink-300">Que souhaitez-vous faire ?</p>
+        <select
+          value={transaction}
+          onChange={(e) => handleTransactionChange(e.target.value)}
+          className="input-field mt-4 text-base font-medium"
+        >
+          <option value="">Choisissez une catégorie</option>
+          {transactionOptions.map((t) => (
+            <option key={t.value} value={t.value}>{t.label}</option>
           ))}
-        </div>
+        </select>
       </section>
 
       {/* Annonces populaires */}

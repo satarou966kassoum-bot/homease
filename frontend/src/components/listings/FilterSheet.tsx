@@ -3,6 +3,7 @@ import { BottomSheet } from "../ui/BottomSheet";
 import { categoryLabels } from "../../utils/format";
 
 export interface FilterValues {
+  transactionType: string;
   category: string;
   city: string;
   minPrice: string;
@@ -10,6 +11,14 @@ export interface FilterValues {
   bedrooms: string;
   furnished: string;
 }
+
+const transactionOptions = [
+  { value: "", label: "Toutes" },
+  { value: "location", label: "Louer" },
+  { value: "vente", label: "Acheter" },
+  { value: "reservation", label: "Réserver" },
+  { value: "visite", label: "Visite" },
+];
 
 interface Props {
   open: boolean;
@@ -32,6 +41,7 @@ export function FilterSheet({ open, onClose, values, onApply }: Props) {
 
   function handleReset() {
     const cleared: FilterValues = {
+      transactionType: "",
       category: "",
       city: "",
       minPrice: "",
@@ -48,7 +58,27 @@ export function FilterSheet({ open, onClose, values, onApply }: Props) {
     <BottomSheet open={open} onClose={onClose} title="Filtres">
       <div className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-medium">Type de bien</label>
+          <label className="mb-1.5 block text-sm font-medium">Transaction</label>
+          <div className="grid grid-cols-4 gap-1.5 rounded-lg bg-sand-100 p-1">
+            {transactionOptions.map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                onClick={() => update("transactionType", t.value)}
+                className={`rounded-lg py-2 text-xs font-medium transition-colors ${
+                  draft.transactionType === t.value
+                    ? "bg-lagoon-500 text-white"
+                    : "text-ink-400"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-sm font-medium">Type de bien</label>
           <select
             value={draft.category}
             onChange={(e) => update("category", e.target.value)}
@@ -62,7 +92,7 @@ export function FilterSheet({ open, onClose, values, onApply }: Props) {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium">Ville ou quartier</label>
+          <label className="mb-1.5 block text-sm font-medium">Ville ou quartier</label>
           <input
             value={draft.city}
             onChange={(e) => update("city", e.target.value)}
@@ -73,7 +103,7 @@ export function FilterSheet({ open, onClose, values, onApply }: Props) {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1 block text-sm font-medium">Prix min (FCFA)</label>
+            <label className="mb-1.5 block text-sm font-medium">Prix min (FCFA)</label>
             <input
               type="number"
               value={draft.minPrice}
@@ -82,7 +112,7 @@ export function FilterSheet({ open, onClose, values, onApply }: Props) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium">Prix max (FCFA)</label>
+            <label className="mb-1.5 block text-sm font-medium">Prix max (FCFA)</label>
             <input
               type="number"
               value={draft.maxPrice}
@@ -93,7 +123,7 @@ export function FilterSheet({ open, onClose, values, onApply }: Props) {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium">Chambres minimum</label>
+          <label className="mb-1.5 block text-sm font-medium">Chambres minimum</label>
           <select
             value={draft.bedrooms}
             onChange={(e) => update("bedrooms", e.target.value)}

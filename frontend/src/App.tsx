@@ -14,6 +14,7 @@ import { FavoritesPage } from "./pages/FavoritesPage";
 import { MessagesPage } from "./pages/MessagesPage";
 import { ReservationsPage } from "./pages/ReservationsPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { ComingSoonPage } from "./pages/ComingSoonPage";
 import {
   AboutPage,
   ContactPage,
@@ -53,6 +54,7 @@ export default function App() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="terms" element={<TermsPage />} />
             <Route path="privacy" element={<PrivacyPage />} />
+            <Route path="a-venir" element={<ComingSoonPage />} />
 
             <Route path="dashboard" element={<DashboardLayout />}>
               <Route index element={<DashboardProfilePage />} />

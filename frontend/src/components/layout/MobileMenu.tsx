@@ -1,5 +1,22 @@
 import { Link } from "react-router-dom";
-import { X, Home, Building2, Trees, Landmark, Sofa, PlusCircle, Heart, MessageCircle, Download } from "lucide-react";
+import {
+  X,
+  Home,
+  Building2,
+  Landmark,
+  Sofa,
+  UtensilsCrossed,
+  TrainFront,
+  Store,
+  Truck,
+  ShoppingBag,
+  Palmtree,
+  Ticket,
+  PlusCircle,
+  Heart,
+  MessageCircle,
+  Download,
+} from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useInstallPrompt } from "../../hooks/useInstallPrompt";
 
@@ -8,13 +25,21 @@ interface Props {
   onClose: () => void;
 }
 
+// Ordonné par importance : le cœur immobilier d'abord, puis les futures
+// verticales du marketplace HomeEase.
 const links = [
-  { to: "/", label: "Accueil", icon: Home },
-  { to: "/rent", label: "Louer", icon: Home },
-  { to: "/buy", label: "Acheter", icon: Building2 },
-  { to: "/land", label: "Parcelles", icon: Trees },
-  { to: "/search?category=bureau", label: "Bureaux", icon: Landmark },
-  { to: "/search?category=meuble", label: "Meublés", icon: Sofa },
+  { to: "/search?category=maison", label: "Maisons", icon: Home, live: true },
+  { to: "/search?category=appartement", label: "Appartements", icon: Building2, live: true },
+  { to: "/search?category=villa", label: "Villas", icon: Landmark, live: true },
+  { to: "/search?category=bureau", label: "Bureaux", icon: Landmark, live: true },
+  { to: "/search?category=meuble", label: "Meublés", icon: Sofa, live: true },
+  { to: "/a-venir?nom=Boutiques", label: "Boutiques", icon: Store, live: false },
+  { to: "/a-venir?nom=Restaurants", label: "Restaurants", icon: UtensilsCrossed, live: false },
+  { to: "/a-venir?nom=Shopping en ligne", label: "Shopping en ligne", icon: ShoppingBag, live: false },
+  { to: "/a-venir?nom=Ravitaillements", label: "Ravitaillements", icon: Truck, live: false },
+  { to: "/a-venir?nom=Locomotives", label: "Locomotives", icon: TrainFront, live: false },
+  { to: "/a-venir?nom=Tourisme", label: "Tourisme", icon: Palmtree, live: false },
+  { to: "/a-venir?nom=Attractions", label: "Attractions", icon: Ticket, live: false },
 ];
 
 export function MobileMenu({ open, onClose }: Props) {
@@ -23,7 +48,6 @@ export function MobileMenu({ open, onClose }: Props) {
 
   return (
     <>
-      {/* Fond sombre cliquable pour fermer */}
       <div
         onClick={onClose}
         className={`fixed inset-0 z-40 bg-black/40 transition-opacity md:hidden ${
@@ -31,9 +55,8 @@ export function MobileMenu({ open, onClose }: Props) {
         }`}
       />
 
-      {/* Panneau glissant */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-72 max-w-[80vw] transform bg-white shadow-lg transition-transform duration-200 md:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 w-72 max-w-[80vw] transform overflow-y-auto bg-white shadow-elevated transition-transform duration-200 md:hidden ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -45,15 +68,22 @@ export function MobileMenu({ open, onClose }: Props) {
         </div>
 
         <nav className="flex flex-col p-2">
-          {links.map(({ to, label, icon: Icon }) => (
+          {links.map(({ to, label, icon: Icon, live }) => (
             <Link
               key={label}
               to={to}
               onClick={onClose}
-              className="flex items-center gap-3 rounded px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
+              className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
             >
-              <Icon size={18} className="text-lagoon-500" />
-              {label}
+              <span className="flex items-center gap-3">
+                <Icon size={18} className="text-lagoon-500" />
+                {label}
+              </span>
+              {!live && (
+                <span className="rounded-full bg-sand-100 px-2 py-0.5 text-[10px] font-medium text-ink-300">
+                  Bientôt
+                </span>
+              )}
             </Link>
           ))}
 
@@ -62,7 +92,7 @@ export function MobileMenu({ open, onClose }: Props) {
           {canInstall && (
             <button
               onClick={promptInstall}
-              className="flex items-center gap-3 rounded px-3 py-2.5 text-sm font-medium text-lagoon-600 hover:bg-lagoon-50"
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-lagoon-600 hover:bg-lagoon-50"
             >
               <Download size={18} />
               Installer l'application
@@ -72,7 +102,7 @@ export function MobileMenu({ open, onClose }: Props) {
           <Link
             to="/publish"
             onClick={onClose}
-            className="flex items-center gap-3 rounded px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
           >
             <PlusCircle size={18} className="text-lagoon-500" />
             Publier une annonce
@@ -80,7 +110,7 @@ export function MobileMenu({ open, onClose }: Props) {
           <Link
             to="/favorites"
             onClick={onClose}
-            className="flex items-center gap-3 rounded px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
           >
             <Heart size={18} className="text-lagoon-500" />
             Favoris
@@ -88,7 +118,7 @@ export function MobileMenu({ open, onClose }: Props) {
           <Link
             to="/messages"
             onClick={onClose}
-            className="flex items-center gap-3 rounded px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
           >
             <MessageCircle size={18} className="text-lagoon-500" />
             Messages
@@ -101,7 +131,7 @@ export function MobileMenu({ open, onClose }: Props) {
               <Link
                 to={user.role === "admin" ? "/admin" : "/dashboard/profile"}
                 onClick={onClose}
-                className="rounded px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
+                className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
               >
                 Mon compte ({user.name})
               </Link>
@@ -110,7 +140,7 @@ export function MobileMenu({ open, onClose }: Props) {
                   logout();
                   onClose();
                 }}
-                className="rounded px-3 py-2.5 text-left text-sm font-medium text-clay-500 hover:bg-sand-100"
+                className="rounded-lg px-3 py-2.5 text-left text-sm font-medium text-clay-500 hover:bg-sand-100"
               >
                 Déconnexion
               </button>
@@ -120,14 +150,14 @@ export function MobileMenu({ open, onClose }: Props) {
               <Link
                 to="/login"
                 onClick={onClose}
-                className="rounded px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
+                className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-500 hover:bg-sand-100"
               >
                 Se connecter
               </Link>
               <Link
                 to="/register"
                 onClick={onClose}
-                className="mx-3 mt-1 rounded bg-lagoon-500 px-3 py-2.5 text-center text-sm font-medium text-white"
+                className="mx-3 mt-1 rounded-lg bg-lagoon-500 px-3 py-2.5 text-center text-sm font-medium text-white"
               >
                 Créer un compte
               </Link>

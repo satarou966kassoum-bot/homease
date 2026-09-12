@@ -21,7 +21,7 @@ export function PropertyCard({ listing }: { listing: Listing }) {
   return (
     <Link
       to={`/listing/${listing._id}`}
-      className="card group block overflow-hidden transition-shadow hover:shadow-elevated"
+      className="card group block overflow-hidden animate-fade-up transition-shadow hover:shadow-elevated"
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-sand-100">
         {hasVideo ? (
