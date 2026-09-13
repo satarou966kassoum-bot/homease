@@ -14,6 +14,7 @@ interface AuthContextValue {
     role?: "client" | "owner";
   }) => Promise<void>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -59,8 +60,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }
 
+  async function refreshUser() {
+    const token = localStorage.getItem("homease_token");
+    if (!token) return;
+    try {
+      const { data } = await api.get("/users/me");
+      const u = data.data.user;
+      const updated: User = {
+        id: u._id,
+        name: u.name,
+        email: u.email,
+        phone: u.phone,
+        role: u.role,
+        avatarUrl: u.avatarUrl,
+        kycStatus: u.kycStatus,
+        createdAt: u.createdAt,
+      };
+      localStorage.setItem("homease_user", JSON.stringify(updated));
+      setUser(updated);
+    } catch {
+      // silencieux : un échec de rafraîchissement ne doit pas déconnecter l'utilisateur
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

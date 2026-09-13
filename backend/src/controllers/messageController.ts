@@ -17,7 +17,7 @@ export async function getConversations(
 ) {
   try {
     const conversations = await Conversation.find({ participants: req.userId })
-      .populate("participants", "name avatarUrl")
+      .populate("participants", "name avatarUrl phone kycStatus")
       .populate("listing", "title photos")
       .sort({ lastMessageAt: -1 });
 
@@ -52,8 +52,14 @@ export async function getMessages(req: AuthRequest, res: Response, next: NextFun
 
 export async function sendMessage(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    const { content } = req.body as { content: string };
-    if (!content?.trim()) throw new AppError("Le message ne peut pas être vide.", 422);
+    const { content, mediaUrl, mediaType } = req.body as {
+      content?: string;
+      mediaUrl?: string;
+      mediaType?: "image" | "video" | "audio";
+    };
+    if (!content?.trim() && !mediaUrl) {
+      throw new AppError("Le message ne peut pas être vide.", 422);
+    }
 
     let conversation = await Conversation.findById(req.params.id);
     if (!conversation) throw new AppError("Conversation introuvable.", 404);
@@ -64,7 +70,9 @@ export async function sendMessage(req: AuthRequest, res: Response, next: NextFun
     const message = await Message.create({
       conversation: conversation._id,
       sender: req.userId,
-      content,
+      content: content || "",
+      mediaUrl,
+      mediaType,
       readBy: [req.userId],
     });
 
@@ -74,12 +82,19 @@ export async function sendMessage(req: AuthRequest, res: Response, next: NextFun
     const recipients = conversation.participants
       .map(String)
       .filter((id) => id !== req.userId);
+    const previewText = content?.trim()
+      ? content.slice(0, 140)
+      : mediaType === "audio"
+        ? "🎤 Message vocal"
+        : mediaType === "video"
+          ? "🎬 Vidéo"
+          : "📷 Photo";
     await Notification.insertMany(
       recipients.map((userId) => ({
         user: userId,
         type: "nouveau_message",
         title: "Nouveau message",
-        body: content.slice(0, 140),
+        body: previewText,
         link: `/messages`,
       }))
     );

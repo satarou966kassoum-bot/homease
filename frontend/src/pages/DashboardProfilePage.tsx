@@ -11,27 +11,65 @@ import {
   XCircle,
   UploadCloud,
   BarChart3,
+  Camera,
+  Eye,
+  TrendingUp,
 } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
 import { useAuth } from "../contexts/AuthContext";
 import { api } from "../services/api";
 import { uploadMedia } from "../services/upload";
 import { VerifiedBadge } from "../components/ui/VerifiedBadge";
 
-interface Stats {
+interface QuickStats {
   listings: number;
   favorites: number;
   reservations: number;
 }
 
+interface OwnerStats {
+  totalListings: number;
+  totalViews: number;
+  byStatus: Record<string, number>;
+  topListings: { id: string; title: string; viewsCount: number }[];
+}
+
+const statusLabel: Record<string, string> = {
+  brouillon: "Brouillon",
+  en_attente: "En attente",
+  approuvee: "Approuvée",
+  rejetee: "Rejetée",
+  suspendue: "Suspendue",
+  vendue_louee: "Vendue / louée",
+};
+
+const PIE_COLORS = ["#B8923A", "#8C6D3E", "#B23A2E", "#C4B79E", "#615E58", "#3D3B37"];
+
 export function DashboardProfilePage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
+  const isOwner = user?.role === "owner" || user?.role === "admin";
+
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "");
   const [kycStatus, setKycStatus] = useState(user?.kycStatus || "non_soumis");
   const [message, setMessage] = useState("");
-  const [stats, setStats] = useState<Stats>({ listings: 0, favorites: 0, reservations: 0 });
+  const [stats, setStats] = useState<QuickStats>({ listings: 0, favorites: 0, reservations: 0 });
+  const [ownerStats, setOwnerStats] = useState<OwnerStats | null>(null);
   const [kycUploading, setKycUploading] = useState(false);
   const [kycError, setKycError] = useState("");
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -39,6 +77,7 @@ export function DashboardProfilePage() {
       const u = res.data.data.user;
       setName(u.name);
       setPhone(u.phone || "");
+      setAvatarUrl(u.avatarUrl || "");
       setKycStatus(u.kycStatus || "non_soumis");
     });
 
@@ -46,8 +85,9 @@ export function DashboardProfilePage() {
       api.get("/favorites").catch(() => ({ data: { data: { favorites: [] } } })),
       api.get("/reservations").catch(() => ({ data: { data: { reservations: [] } } })),
     ];
-    if (user.role === "owner" || user.role === "admin") {
+    if (isOwner) {
       requests.push(api.get("/listings/mine/all").catch(() => ({ data: { data: { listings: [] } } })));
+      api.get("/listings/mine/stats").then((res) => setOwnerStats(res.data.data));
     }
 
     Promise.all(requests).then(([favRes, resRes, listRes]) => {
@@ -65,8 +105,23 @@ export function DashboardProfilePage() {
     try {
       await api.put("/users/me", { name, phone });
       setMessage("Profil mis à jour.");
+      refreshUser();
     } catch {
       setMessage("Impossible de mettre à jour le profil.");
+    }
+  }
+
+  async function handleAvatarUpload(file: File) {
+    setAvatarUploading(true);
+    try {
+      const result = await uploadMedia(file);
+      await api.put("/users/me", { avatarUrl: result.url });
+      setAvatarUrl(result.url);
+      refreshUser();
+    } catch {
+      setMessage("Impossible de mettre à jour la photo.");
+    } finally {
+      setAvatarUploading(false);
     }
   }
 
@@ -87,27 +142,52 @@ export function DashboardProfilePage() {
   if (!user) return null;
 
   const quickActions = [
-    ...(user.role === "owner" || user.role === "admin"
-      ? [
-          { to: "/dashboard/listings", label: "Mes annonces", icon: Home, value: stats.listings },
-          { to: "/dashboard/stats", label: "Statistiques", icon: BarChart3, value: null },
-        ]
+    ...(isOwner
+      ? [{ to: "/dashboard/listings", label: "Annonces", icon: Home, value: stats.listings }]
       : []),
     { to: "/favorites", label: "Favoris", icon: Heart, value: stats.favorites },
     { to: "/dashboard/reservations", label: "Commandes", icon: CalendarCheck, value: stats.reservations },
     { to: "/messages", label: "Messages", icon: MessageCircle, value: null },
   ];
 
+  const barData = ownerStats?.topListings.map((l) => ({
+    name: l.title.length > 12 ? l.title.slice(0, 12) + "…" : l.title,
+    vues: l.viewsCount,
+  })) || [];
+
+  const pieData = ownerStats
+    ? Object.entries(ownerStats.byStatus).map(([status, count]) => ({
+        name: statusLabel[status] || status,
+        value: count,
+      }))
+    : [];
+
   return (
     <div className="space-y-8">
-      {/* En-tête profil */}
+      {/* En-tête profil avec photo modifiable */}
       <div className="card flex items-center gap-4 p-5">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-lagoon-50 text-2xl font-semibold text-lagoon-600">
-          {user.name.charAt(0).toUpperCase()}
-        </span>
+        <label className="group relative h-16 w-16 shrink-0 cursor-pointer">
+          <span className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-lagoon-50 text-2xl font-semibold text-lagoon-600">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={name} className="h-full w-full object-cover" />
+            ) : (
+              name.charAt(0).toUpperCase()
+            )}
+          </span>
+          <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 text-white opacity-0 transition-opacity group-hover:opacity-100">
+            <Camera size={18} />
+          </span>
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            disabled={avatarUploading}
+            onChange={(e) => e.target.files?.[0] && handleAvatarUpload(e.target.files[0])}
+          />
+        </label>
         <div>
           <p className="flex items-center gap-2 text-lg font-medium">
-            {user.name}
+            {name}
             {kycStatus === "verifie" && <VerifiedBadge compact />}
           </p>
           <p className="text-sm text-ink-300">{user.email}</p>
@@ -117,9 +197,72 @@ export function DashboardProfilePage() {
         </div>
       </div>
 
-      {/* Actions rapides / statistiques */}
+      {/* Statistiques directement visibles — propriétaires */}
+      {isOwner && ownerStats && (
+        <div>
+          <p className="mb-3 text-sm font-semibold text-ink-500">Vos statistiques</p>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div className="card p-4">
+              <Home size={18} className="text-lagoon-500" />
+              <p className="mt-2 text-2xl font-semibold">{ownerStats.totalListings}</p>
+              <p className="text-xs text-ink-300">Annonces publiées</p>
+            </div>
+            <div className="card p-4">
+              <Eye size={18} className="text-lagoon-500" />
+              <p className="mt-2 text-2xl font-semibold">{ownerStats.totalViews}</p>
+              <p className="text-xs text-ink-300">Vues cumulées</p>
+            </div>
+            <div className="card p-4">
+              <TrendingUp size={18} className="text-lagoon-500" />
+              <p className="mt-2 text-2xl font-semibold">{ownerStats.byStatus.approuvee || 0}</p>
+              <p className="text-xs text-ink-300">Annonces actives</p>
+            </div>
+          </div>
+
+          {barData.length > 0 && (
+            <div className="card mt-3 p-4">
+              <p className="mb-2 text-sm font-semibold text-ink-500">Vues par annonce</p>
+              <div className="h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={barData} margin={{ left: -20 }}>
+                    <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} angle={-15} textAnchor="end" height={45} />
+                    <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                    <Tooltip />
+                    <Bar dataKey="vues" fill="#B8923A" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
+          {pieData.length > 0 && (
+            <div className="card mt-3 p-4">
+              <p className="mb-2 text-sm font-semibold text-ink-500">Répartition par statut</p>
+              <div className="h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={45} outerRadius={75} paddingAngle={3}>
+                      {pieData.map((_, i) => (
+                        <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
+          <Link to="/dashboard/stats" className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-lagoon-600">
+            <BarChart3 size={14} /> Voir toutes les statistiques
+          </Link>
+        </div>
+      )}
+
+      {/* Actions rapides */}
       <div>
-        <p className="mb-3 text-sm font-semibold text-ink-500">Tableau de bord</p>
+        <p className="mb-3 text-sm font-semibold text-ink-500">Accès rapide</p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {user.role === "owner" && (
             <Link
@@ -145,7 +288,7 @@ export function DashboardProfilePage() {
       </div>
 
       {/* Vérification KYC — propriétaires uniquement */}
-      {(user.role === "owner" || user.role === "admin") && (
+      {isOwner && (
         <div className="card p-5">
           <p className="text-sm font-semibold text-ink-500">Vérification du profil (KYC)</p>
           <p className="mt-1 text-sm text-ink-300">

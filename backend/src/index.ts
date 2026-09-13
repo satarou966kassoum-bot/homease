@@ -20,6 +20,7 @@ import uploadRoutes from "./routes/uploadRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
 import bannerRoutes from "./routes/bannerRoutes";
 import collectionRoutes from "./routes/collectionRoutes";
+import reviewRoutes from "./routes/reviewRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -61,6 +62,7 @@ app.use("/api/uploads", uploadRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/banners", bannerRoutes);
 app.use("/api/collections", collectionRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

@@ -87,10 +87,14 @@ export const Conversation: Model<IConversation> =
 
 /* ----------------------------- Message ------------------------------ */
 
+export type MessageMediaType = "image" | "video" | "audio";
+
 export interface IMessage extends Document {
   conversation: Types.ObjectId;
   sender: Types.ObjectId;
   content: string;
+  mediaUrl?: string;
+  mediaType?: MessageMediaType;
   readBy: Types.ObjectId[];
   createdAt: Date;
 }
@@ -104,7 +108,9 @@ const MessageSchema = new Schema<IMessage>(
       index: true,
     },
     sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    content: { type: String, required: true, maxlength: 4000 },
+    content: { type: String, default: "", maxlength: 4000 },
+    mediaUrl: { type: String },
+    mediaType: { type: String, enum: ["image", "video", "audio"] },
     readBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: { createdAt: true, updatedAt: false } }

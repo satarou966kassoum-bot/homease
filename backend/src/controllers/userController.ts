@@ -63,3 +63,17 @@ export async function submitKyc(req: AuthRequest, res: Response, next: NextFunct
     next(error);
   }
 }
+
+// Profil public — visible depuis la messagerie ou une fiche annonce.
+// N'expose jamais d'informations sensibles (email, téléphone, statut compte).
+export async function getPublicProfile(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const user = await User.findById(req.params.id).select(
+      "name avatarUrl role kycStatus createdAt"
+    );
+    if (!user) throw new AppError("Utilisateur introuvable.", 404);
+    res.json({ success: true, data: { user } });
+  } catch (error) {
+    next(error);
+  }
+}

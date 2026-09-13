@@ -330,18 +330,22 @@ export function ListingDetailPage() {
           </p>
 
           {owner && (
-            <div className="mt-4 flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-lagoon-50 font-medium text-lagoon-600">
-                {owner.name.charAt(0).toUpperCase()}
+            <Link to={`/profil/${ownerId}`} className="mt-4 flex items-center gap-3 hover:opacity-80">
+              <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-lagoon-50 font-medium text-lagoon-600">
+                {(owner as any).avatarUrl ? (
+                  <img src={(owner as any).avatarUrl} alt={owner.name} className="h-full w-full object-cover" />
+                ) : (
+                  owner.name.charAt(0).toUpperCase()
+                )}
               </span>
               <div>
                 <p className="flex items-center gap-1.5 text-sm font-medium">
                   {owner.name}
                   {(owner as any).kycStatus === "verifie" && <VerifiedBadge compact />}
                 </p>
-                <p className="text-xs text-ink-300">Propriétaire / annonceur</p>
+                <p className="text-xs text-ink-300">Propriétaire / annonceur · voir le profil</p>
               </div>
-            </div>
+            </Link>
           )}
 
           {user ? (

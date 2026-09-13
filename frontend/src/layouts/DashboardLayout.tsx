@@ -7,7 +7,7 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
   }`;
 
 export function DashboardLayout() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, logout } = useAuth();
 
   if (isLoading) return null;
   if (!user) return <Navigate to="/login" replace />;
@@ -21,6 +21,7 @@ export function DashboardLayout() {
         <nav className="space-y-1">
           {isOwner ? (
             <>
+              <NavLink to="/dashboard" end className={linkClass}>Vue d'ensemble</NavLink>
               <NavLink to="/dashboard/listings" className={linkClass}>Annonces</NavLink>
               <NavLink to="/dashboard/stats" className={linkClass}>Statistiques</NavLink>
               <NavLink to="/dashboard/messages" className={linkClass}>Messages</NavLink>
@@ -30,11 +31,18 @@ export function DashboardLayout() {
             </>
           ) : (
             <>
+              <NavLink to="/dashboard" end className={linkClass}>Mes informations</NavLink>
               <NavLink to="/dashboard/reservations" className={linkClass}>Commandes</NavLink>
               <NavLink to="/dashboard/messages" className={linkClass}>Messages</NavLink>
-              <NavLink to="/dashboard/profile" className={linkClass}>Profil</NavLink>
             </>
           )}
+          <div className="my-2 border-t border-sand-200" />
+          <button
+            onClick={logout}
+            className="block w-full rounded px-3 py-2 text-left text-sm font-medium text-clay-500 hover:bg-sand-100"
+          >
+            Déconnexion
+          </button>
         </nav>
         <div>
           <Outlet />
