@@ -9,10 +9,16 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   </React.StrictMode>
 );
 
+// Le service worker est désactivé pour l'instant : en phase de mises à jour
+// fréquentes, il servait une version mise en cache avant la nouvelle. On
+// désinscrit toute installation précédente pour que chacun retrouve la
+// dernière version immédiatement. On pourra le réactiver une fois le projet
+// stabilisé (avec une meilleure stratégie de mise à jour).
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(() => {
-      // L'échec d'enregistrement du service worker ne doit jamais bloquer l'app.
-    });
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((registration) => registration.unregister());
   });
+  if ("caches" in window) {
+    caches.keys().then((names) => names.forEach((name) => caches.delete(name)));
+  }
 }
