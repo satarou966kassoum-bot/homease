@@ -46,7 +46,7 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 
 app.get("/api/health", (req, res) => {
-  res.json({ success: true, message: "HomeEase API opérationnelle." });
+  res.json({ success: true, message: "Homizzy API opérationnelle." });
 });
 
 app.use("/api/auth", authRoutes);
@@ -70,7 +70,7 @@ app.use(errorHandler);
 async function start() {
   await connectDB();
   app.listen(PORT, () => {
-    console.log(`🚀 HomeEase API démarrée sur le port ${PORT}`);
+    console.log(`🚀 Homizzy API démarrée sur le port ${PORT}`);
   });
 }
 

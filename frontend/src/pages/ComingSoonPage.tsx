@@ -12,7 +12,7 @@ export function ComingSoonPage() {
       </span>
       <h1 className="mt-4 font-display text-2xl font-medium">{name} arrive bientôt</h1>
       <p className="mt-2 max-w-sm text-sm text-ink-300">
-        HomeEase s'étend progressivement au-delà de l'immobilier. Cette catégorie sera
+        Homizzy s'étend progressivement au-delà de l'immobilier. Cette catégorie sera
         activée dans une prochaine mise à jour.
       </p>
       <Link to="/" className="btn-primary mt-6">

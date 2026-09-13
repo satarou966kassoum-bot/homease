@@ -3,9 +3,9 @@ import { FormEvent, useState } from "react";
 export function AboutPage() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-14">
-      <h1 className="font-display text-2xl font-medium">À propos de HomeEase</h1>
+      <h1 className="font-display text-2xl font-medium">À propos de Homizzy</h1>
       <p className="mt-4 text-sm leading-relaxed text-ink-400">
-        HomeEase est une plateforme immobilière conçue pour le marché béninois. Notre
+        Homizzy est une plateforme immobilière conçue pour le marché béninois. Notre
         mission est de simplifier la recherche, la publication et la réservation de
         biens immobiliers à Cotonou, Abomey-Calavi, Porto-Novo et dans les villes
         voisines, en s'appuyant sur des annonces vérifiées et une expérience pensée
@@ -49,9 +49,9 @@ export function TermsPage() {
         Conditions d'utilisation
       </h1>
       <p className="mt-4">
-        En utilisant HomeEase, vous acceptez de fournir des informations exactes sur
+        En utilisant Homizzy, vous acceptez de fournir des informations exactes sur
         vos annonces, de respecter les autres utilisateurs et de ne publier aucun
-        contenu illégal, trompeur ou frauduleux. HomeEase se réserve le droit de
+        contenu illégal, trompeur ou frauduleux. Homizzy se réserve le droit de
         modérer, suspendre ou supprimer toute annonce ou tout compte ne respectant
         pas ces règles.
       </p>
@@ -64,7 +64,7 @@ export function PrivacyPage() {
     <div className="mx-auto max-w-2xl px-6 py-14 text-sm leading-relaxed text-ink-400">
       <h1 className="font-display text-2xl font-medium text-ink-500">Confidentialité</h1>
       <p className="mt-4">
-        HomeEase collecte uniquement les informations nécessaires au fonctionnement de
+        Homizzy collecte uniquement les informations nécessaires au fonctionnement de
         la plateforme (compte, annonces, messages, réservations) et ne partage pas vos
         données personnelles avec des tiers sans votre consentement, en dehors des cas
         prévus par la loi.
@@ -89,7 +89,7 @@ export function FAQPage() {
     },
     {
       q: "Comment contacter un propriétaire ?",
-      a: "Depuis la page d'une annonce, utilisez le bouton \"Contacter\" pour lui envoyer un message directement sur HomeEase.",
+      a: "Depuis la page d'une annonce, utilisez le bouton \"Contacter\" pour lui envoyer un message directement sur Homizzy.",
     },
     {
       q: "Le paiement en ligne est-il disponible ?",

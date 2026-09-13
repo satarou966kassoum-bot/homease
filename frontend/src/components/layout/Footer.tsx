@@ -34,7 +34,7 @@ export function Footer() {
       <div className="page-container py-12">
         <div className="grid gap-10 sm:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
-            <p className="font-display text-xl font-semibold text-white">HomeEase</p>
+            <p className="font-display text-xl font-semibold text-white">Homizzy</p>
             <p className="mt-2 max-w-xs text-sm text-sand-200">
               Trouvez et publiez facilement des biens immobiliers au Bénin.
             </p>
@@ -55,7 +55,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-sand-200 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} HomeEase. Tous droits réservés.</p>
+          <p>© {new Date().getFullYear()} Homizzy. Tous droits réservés.</p>
           <p>Fait avec soin pour le marché béninois 🇧🇯</p>
         </div>
       </div>

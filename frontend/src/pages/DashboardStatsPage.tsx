@@ -38,7 +38,7 @@ const statusLabel: Record<string, string> = {
   vendue_louee: "Vendue / louée",
 };
 
-const PIE_COLORS = ["#1F1D1B", "#8C6D3E", "#B23A2E", "#C4B79E", "#615E58", "#3D3B37"];
+const PIE_COLORS = ["#141311", "#A9822E", "#B23A2E", "#C4B79E", "#615E58", "#3D3B37"];
 
 export function DashboardStatsPage() {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -88,7 +88,7 @@ export function DashboardStatsPage() {
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} angle={-15} textAnchor="end" height={50} />
                 <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
                 <Tooltip />
-                <Bar dataKey="vues" fill="#1F1D1B" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="vues" fill="#141311" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

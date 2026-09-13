@@ -1,13 +1,13 @@
 {
-  "name": "HomeEase — Immobilier au Bénin",
-  "short_name": "HomeEase",
+  "name": "Homizzy — Immobilier au Bénin",
+  "short_name": "Homizzy",
   "description": "Louer, acheter et réserver des biens immobiliers au Bénin.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FAF7F2",
-  "theme_color": "#B8923A",
+  "theme_color": "#141311",
   "lang": "fr",
   "icons": [
     {

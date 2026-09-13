@@ -23,10 +23,10 @@ const advantages = [
   },
 ];
 
-export function WhyHomeEasePage() {
+export function WhyHomizzyPage() {
   return (
     <div className="page-container section max-w-2xl">
-      <h1 className="font-display text-2xl font-medium">Pourquoi HomeEase ?</h1>
+      <h1 className="font-display text-2xl font-medium">Pourquoi Homizzy ?</h1>
       <div className="mt-6 space-y-6">
         {advantages.map(({ icon: Icon, title, body }) => (
           <div key={title} className="flex gap-4">

@@ -23,7 +23,7 @@ router.post("/", protect, async (req: AuthRequest, res: Response, next: NextFunc
     });
     res.status(201).json({
       success: true,
-      message: "Signalement envoyé. Merci de contribuer à la sécurité de HomeEase.",
+      message: "Signalement envoyé. Merci de contribuer à la sécurité de Homizzy.",
       data: { report },
     });
   } catch (error: any) {

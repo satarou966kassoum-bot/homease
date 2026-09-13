@@ -35,7 +35,7 @@ interface Props {
 }
 
 // Ordonné par importance : le cœur immobilier d'abord, puis les futures
-// verticales du marketplace HomeEase.
+// verticales du marketplace Homizzy.
 const categoryLinks = [
   { to: "/search?category=maison", label: "Maisons", icon: Home, live: true },
   { to: "/search?category=appartement", label: "Appartements", icon: Building2, live: true },
@@ -52,7 +52,7 @@ const categoryLinks = [
 ];
 
 const infoLinks = [
-  { to: "/pourquoi", label: "Pourquoi HomeEase ?", icon: Sparkles },
+  { to: "/pourquoi", label: "Pourquoi Homizzy ?", icon: Sparkles },
   { to: "/faq", label: "FAQ", icon: HelpCircle },
   { to: "/support", label: "Support", icon: LifeBuoy },
   { to: "/contact", label: "Nous contacter", icon: Mail },
@@ -81,7 +81,7 @@ export function MobileMenu({ open, onClose }: Props) {
         }`}
       >
         <div className="flex items-center justify-between border-b border-sand-200 p-4">
-          <span className="font-display text-lg font-semibold text-lagoon-500">HomeEase</span>
+          <span className="font-display text-lg font-semibold text-lagoon-500">Homizzy</span>
           <button onClick={onClose} aria-label="Fermer le menu">
             <X size={20} />
           </button>
