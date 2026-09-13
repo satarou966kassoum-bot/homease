@@ -24,6 +24,7 @@ import {
   FileText,
   Shield,
   Download,
+  Sparkles,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useInstallPrompt } from "../../hooks/useInstallPrompt";
@@ -51,6 +52,7 @@ const categoryLinks = [
 ];
 
 const infoLinks = [
+  { to: "/pourquoi", label: "Pourquoi HomeEase ?", icon: Sparkles },
   { to: "/faq", label: "FAQ", icon: HelpCircle },
   { to: "/support", label: "Support", icon: LifeBuoy },
   { to: "/contact", label: "Nous contacter", icon: Mail },

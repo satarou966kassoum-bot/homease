@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShieldCheck, Clock, MessageCircle, Search as SearchIcon } from "lucide-react";
 import { HeroSearchBar } from "../components/listings/HeroSearchBar";
 import { HeroBannerCarousel } from "../components/listings/HeroBannerCarousel";
 import { PropertyCard } from "../components/listings/PropertyCard";
@@ -25,29 +24,6 @@ const zones = [
   "Fidjrossè",
   "Haie Vive",
   "Cococodji",
-];
-
-const advantages = [
-  {
-    icon: SearchIcon,
-    title: "Recherche simplifiée",
-    body: "Filtrez par ville, quartier, prix et type de bien pour trouver exactement ce qu'il vous faut.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Annonces vérifiées",
-    body: "Chaque annonce est modérée avant publication pour limiter les fausses annonces et les arnaques.",
-  },
-  {
-    icon: MessageCircle,
-    title: "Contact direct",
-    body: "Échangez directement avec le propriétaire ou l'agence via la messagerie intégrée.",
-  },
-  {
-    icon: Clock,
-    title: "Gain de temps",
-    body: "Comparez rapidement plusieurs biens et faites une demande de réservation en quelques clics.",
-  },
 ];
 
 export function HomePage() {
@@ -163,39 +139,6 @@ export function HomePage() {
             <option key={z} value={z}>{z}</option>
           ))}
         </select>
-      </section>
-
-      {/* Pourquoi HomeEase */}
-      <section className="bg-white py-9 sm:py-14">
-        <div className="page-container">
-          <h2 className="text-2xl font-medium">Pourquoi HomeEase ?</h2>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {advantages.map(({ icon: Icon, title, body }) => (
-              <div key={title}>
-                <Icon size={22} className="text-ochre-500" />
-                <p className="mt-3 font-medium">{title}</p>
-                <p className="mt-1 text-sm text-ink-300">{body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA publication */}
-      <section className="section page-container">
-        <div className="card flex flex-col items-center gap-4 bg-lagoon-500 px-6 py-10 text-center shadow-elevated sm:flex-row sm:justify-between sm:text-left">
-          <div>
-            <p className="font-display text-xl font-medium text-white">
-              Vous avez un bien à louer ou à vendre ?
-            </p>
-            <p className="mt-1 text-sm text-sand-100">
-              Publiez votre annonce gratuitement et touchez des milliers de personnes.
-            </p>
-          </div>
-          <Link to="/publish" className="btn-accent shrink-0">
-            Publier une annonce
-          </Link>
-        </div>
       </section>
     </div>
   );

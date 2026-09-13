@@ -24,6 +24,7 @@ import {
   FAQPage,
   SupportPage,
 } from "./pages/StaticPages";
+import { WhyHomeEasePage } from "./pages/WhyHomeEasePage";
 
 import { DashboardListingsPage } from "./pages/DashboardListingsPage";
 import { DashboardProfilePage } from "./pages/DashboardProfilePage";
@@ -61,6 +62,7 @@ export default function App() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="terms" element={<TermsPage />} />
             <Route path="privacy" element={<PrivacyPage />} />
+            <Route path="pourquoi" element={<WhyHomeEasePage />} />
             <Route path="faq" element={<FAQPage />} />
             <Route path="support" element={<SupportPage />} />
             <Route path="a-venir" element={<ComingSoonPage />} />

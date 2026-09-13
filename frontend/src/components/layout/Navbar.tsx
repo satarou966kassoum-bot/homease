@@ -66,9 +66,9 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* En-tête mobile compact — logo centré */}
-      <header className="grid grid-cols-3 items-center border-b border-sand-200 bg-sand-50 px-3 py-3 md:hidden">
-        <div className="flex justify-start">
+      {/* En-tête mobile compact */}
+      <header className="flex items-center justify-between border-b border-sand-200 bg-sand-50 px-3 py-3 md:hidden">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setMenuOpen(true)}
             aria-label="Ouvrir le menu"
@@ -76,19 +76,18 @@ export function Navbar() {
           >
             <Menu size={20} className="text-ink-500" />
           </button>
+          <Link to="/" className="font-display text-2xl font-semibold text-lagoon-500">
+            HomeEase
+          </Link>
         </div>
 
-        <Link to="/" className="justify-self-center font-display text-2xl font-semibold text-lagoon-500">
-          HomeEase
-        </Link>
-
         {user ? (
-          <div className="flex items-center justify-end gap-2">
+          <div className="flex items-center gap-2">
             <NotificationBell />
             <AvatarMenu />
           </div>
         ) : (
-          <Link to="/login" className="justify-self-end text-sm font-medium text-lagoon-500">
+          <Link to="/login" className="text-sm font-medium text-lagoon-500">
             Se connecter
           </Link>
         )}
