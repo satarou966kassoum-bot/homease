@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface Props {
   open: boolean;
