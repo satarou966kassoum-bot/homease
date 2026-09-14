@@ -54,7 +54,7 @@ const statusLabel: Record<string, string> = {
   vendue_louee: "Vendue / louée",
 };
 
-const PIE_COLORS = ["#141311", "#A9822E", "#B23A2E", "#C4B79E", "#615E58", "#3D3B37"];
+const PIE_COLORS = ["#3D3B37", "#8B8580", "#C7B896", "#615E58", "#E3D8C3", "#A39C90"];
 
 export function DashboardProfilePage() {
   const { user, refreshUser } = useAuth();
@@ -167,7 +167,7 @@ export function DashboardProfilePage() {
       {/* En-tête profil avec photo modifiable */}
       <div className="card flex items-center gap-4 p-5">
         <label className="group relative h-16 w-16 shrink-0 cursor-pointer">
-          <span className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-lagoon-50 text-2xl font-semibold text-lagoon-600">
+          <span className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-sand-200 text-2xl font-semibold text-ink-500">
             {avatarUrl ? (
               <img src={avatarUrl} alt={name} className="h-full w-full object-cover" />
             ) : (
@@ -203,17 +203,17 @@ export function DashboardProfilePage() {
           <p className="mb-3 text-sm font-semibold text-ink-500">Vos statistiques</p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div className="card p-4">
-              <Home size={18} className="text-lagoon-500" />
+              <Home size={18} className="text-ink-500" />
               <p className="mt-2 text-2xl font-semibold">{ownerStats.totalListings}</p>
               <p className="text-xs text-ink-300">Annonces publiées</p>
             </div>
             <div className="card p-4">
-              <Eye size={18} className="text-lagoon-500" />
+              <Eye size={18} className="text-ink-500" />
               <p className="mt-2 text-2xl font-semibold">{ownerStats.totalViews}</p>
               <p className="text-xs text-ink-300">Vues cumulées</p>
             </div>
             <div className="card p-4">
-              <TrendingUp size={18} className="text-lagoon-500" />
+              <TrendingUp size={18} className="text-ink-500" />
               <p className="mt-2 text-2xl font-semibold">{ownerStats.byStatus.approuvee || 0}</p>
               <p className="text-xs text-ink-300">Annonces actives</p>
             </div>
@@ -228,7 +228,7 @@ export function DashboardProfilePage() {
                     <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} angle={-15} textAnchor="end" height={45} />
                     <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
                     <Tooltip />
-                    <Bar dataKey="vues" fill="#141311" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="vues" fill="#3D3B37" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -254,7 +254,7 @@ export function DashboardProfilePage() {
             </div>
           )}
 
-          <Link to="/dashboard/stats" className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-lagoon-600">
+          <Link to="/dashboard/stats" className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-ink-500">
             <BarChart3 size={14} /> Voir toutes les statistiques
           </Link>
         </div>
@@ -267,7 +267,7 @@ export function DashboardProfilePage() {
           {user.role === "owner" && (
             <Link
               to="/publish"
-              className="card flex flex-col items-center justify-center gap-2 p-4 text-center text-lagoon-600 hover:shadow-elevated"
+              className="card flex flex-col items-center justify-center gap-2 p-4 text-center text-ink-500 hover:shadow-elevated"
             >
               <PlusCircle size={20} />
               <span className="text-xs font-medium">Publier</span>
@@ -279,7 +279,7 @@ export function DashboardProfilePage() {
               to={to}
               className="card flex flex-col items-center justify-center gap-2 p-4 text-center hover:shadow-elevated"
             >
-              <Icon size={20} className="text-lagoon-500" />
+              <Icon size={20} className="text-ink-500" />
               {value !== null && <span className="text-lg font-semibold">{value}</span>}
               <span className="text-xs font-medium text-ink-400">{label}</span>
             </Link>
@@ -298,13 +298,13 @@ export function DashboardProfilePage() {
 
           <div className="mt-4">
             {kycStatus === "verifie" && (
-              <div className="flex items-center gap-2 rounded-lg bg-lagoon-50 px-4 py-3 text-sm text-lagoon-600">
+              <div className="flex items-center gap-2 rounded-lg bg-sand-100 px-4 py-3 text-sm text-ink-500">
                 <ShieldCheck size={18} />
                 Votre profil est vérifié. Le badge est actif sur vos annonces.
               </div>
             )}
             {kycStatus === "en_attente" && (
-              <div className="flex items-center gap-2 rounded-lg bg-ochre-100 px-4 py-3 text-sm text-ochre-600">
+              <div className="flex items-center gap-2 rounded-lg bg-sand-200 px-4 py-3 text-sm text-ink-500">
                 <Clock size={18} />
                 Document envoyé — vérification en cours par un administrateur.
               </div>
@@ -317,8 +317,8 @@ export function DashboardProfilePage() {
             )}
 
             {(kycStatus === "non_soumis" || kycStatus === "rejete") && (
-              <label className="mt-3 flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-sand-200 p-6 text-center hover:border-lagoon-500">
-                <UploadCloud size={22} className="text-lagoon-500" />
+              <label className="mt-3 flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-sand-200 p-6 text-center hover:border-ink-400">
+                <UploadCloud size={22} className="text-ink-500" />
                 <span className="text-sm text-ink-400">
                   {kycUploading ? "Envoi en cours..." : "Téléverser une pièce d'identité (CIP, passeport...)"}
                 </span>
@@ -341,7 +341,7 @@ export function DashboardProfilePage() {
         <p className="text-sm font-semibold text-ink-500">Modifier mes informations</p>
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          {message && <p className="text-sm text-lagoon-600">{message}</p>}
+          {message && <p className="text-sm text-ink-500">{message}</p>}
 
           <div>
             <label className="mb-1 block text-sm font-medium">Nom</label>

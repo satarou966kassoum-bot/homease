@@ -38,7 +38,7 @@ const statusLabel: Record<string, string> = {
   vendue_louee: "Vendue / louée",
 };
 
-const PIE_COLORS = ["#141311", "#A9822E", "#B23A2E", "#C4B79E", "#615E58", "#3D3B37"];
+const PIE_COLORS = ["#3D3B37", "#8B8580", "#C7B896", "#615E58", "#E3D8C3", "#A39C90"];
 
 export function DashboardStatsPage() {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -63,17 +63,17 @@ export function DashboardStatsPage() {
     <div className="space-y-8">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="card p-4">
-          <Home size={18} className="text-lagoon-500" />
+          <Home size={18} className="text-ink-500" />
           <p className="mt-2 text-2xl font-semibold">{stats.totalListings}</p>
           <p className="text-xs text-ink-300">Annonces publiées</p>
         </div>
         <div className="card p-4">
-          <Eye size={18} className="text-lagoon-500" />
+          <Eye size={18} className="text-ink-500" />
           <p className="mt-2 text-2xl font-semibold">{stats.totalViews}</p>
           <p className="text-xs text-ink-300">Vues cumulées</p>
         </div>
         <div className="card p-4">
-          <TrendingUp size={18} className="text-lagoon-500" />
+          <TrendingUp size={18} className="text-ink-500" />
           <p className="mt-2 text-2xl font-semibold">{stats.byStatus.approuvee || 0}</p>
           <p className="text-xs text-ink-300">Annonces actives</p>
         </div>
@@ -88,7 +88,7 @@ export function DashboardStatsPage() {
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} angle={-15} textAnchor="end" height={50} />
                 <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
                 <Tooltip />
-                <Bar dataKey="vues" fill="#141311" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="vues" fill="#3D3B37" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

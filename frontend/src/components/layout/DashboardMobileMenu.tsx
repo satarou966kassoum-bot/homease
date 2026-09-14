@@ -9,7 +9,7 @@ interface Props {
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `block rounded-lg px-3 py-2.5 text-sm font-medium ${
-    isActive ? "bg-lagoon-50 text-lagoon-600" : "text-ink-400 hover:bg-sand-100"
+    isActive ? "bg-sand-200 text-ink-500" : "text-ink-400 hover:bg-sand-100"
   }`;
 
 export function DashboardMobileMenu({ open, onClose }: Props) {
@@ -37,7 +37,7 @@ export function DashboardMobileMenu({ open, onClose }: Props) {
         }`}
       >
         <div className="flex items-center justify-between border-b border-sand-200 p-4">
-          <span className="font-display text-lg font-semibold text-lagoon-500">Tableau de bord</span>
+          <span className="font-display text-lg font-semibold text-ink-500">Tableau de bord</span>
           <button onClick={onClose} aria-label="Fermer le menu">
             <X size={20} />
           </button>

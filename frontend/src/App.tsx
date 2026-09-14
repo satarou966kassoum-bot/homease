@@ -69,18 +69,6 @@ export default function App() {
             <Route path="support" element={<SupportPage />} />
             <Route path="a-venir" element={<ComingSoonPage />} />
 
-            <Route path="dashboard" element={<DashboardLayout />}>
-              <Route index element={<DashboardProfilePage />} />
-              <Route path="listings" element={<DashboardListingsPage />} />
-              <Route path="listings/:id/edit" element={<PublishPage />} />
-              <Route path="stats" element={<DashboardStatsPage />} />
-              <Route path="booster" element={<DashboardBoosterPage />} />
-              <Route path="collections" element={<DashboardCollectionsPage />} />
-              <Route path="reservations" element={<ReservationsPage />} />
-              <Route path="messages" element={<MessagesPage />} />
-              <Route path="profile" element={<DashboardProfilePage />} />
-            </Route>
-
             <Route path="admin" element={<AdminLayout />}>
               <Route index element={<AdminOverviewPage />} />
               <Route path="banners" element={<AdminBannersPage />} />
@@ -92,6 +80,19 @@ export default function App() {
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />
+          </Route>
+
+          {/* Le tableau de bord a son propre en-tête/menu — pas de Navbar globale ici */}
+          <Route path="dashboard" element={<DashboardLayout />}>
+            <Route index element={<DashboardProfilePage />} />
+            <Route path="listings" element={<DashboardListingsPage />} />
+            <Route path="listings/:id/edit" element={<PublishPage />} />
+            <Route path="stats" element={<DashboardStatsPage />} />
+            <Route path="booster" element={<DashboardBoosterPage />} />
+            <Route path="collections" element={<DashboardCollectionsPage />} />
+            <Route path="reservations" element={<ReservationsPage />} />
+            <Route path="messages" element={<MessagesPage />} />
+            <Route path="profile" element={<DashboardProfilePage />} />
           </Route>
         </Routes>
       </AuthProvider>
