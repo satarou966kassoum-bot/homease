@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { NotificationBell } from "./NotificationBell";
 import { MobileMenu } from "./MobileMenu";
 import { AvatarMenu } from "./AvatarMenu";
+import { AnimatedLogo } from "./AnimatedLogo";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `text-sm font-medium transition-colors ${
@@ -21,7 +22,7 @@ export function Navbar() {
       <header className="hidden border-b border-sand-200 bg-sand-50/95 backdrop-blur md:block">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link to="/" className="font-display text-xl font-semibold text-lagoon-500">
-            Homizzy
+            <AnimatedLogo />
           </Link>
 
           <nav className="flex items-center gap-7">
@@ -77,7 +78,7 @@ export function Navbar() {
             <Menu size={20} className="text-ink-500" />
           </button>
           <Link to="/" className="font-display text-2xl font-semibold text-lagoon-500">
-            Homizzy
+            <AnimatedLogo />
           </Link>
         </div>
 

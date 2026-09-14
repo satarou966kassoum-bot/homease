@@ -24,7 +24,7 @@ import {
   FAQPage,
   SupportPage,
 } from "./pages/StaticPages";
-import { WhyHomizzyPage } from "./pages/WhyHomizzyPage";
+import { WhyEmobilePage } from "./pages/WhyEmobilePage";
 import { PublicProfilePage } from "./pages/PublicProfilePage";
 
 import { DashboardListingsPage } from "./pages/DashboardListingsPage";
@@ -63,7 +63,7 @@ export default function App() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="terms" element={<TermsPage />} />
             <Route path="privacy" element={<PrivacyPage />} />
-            <Route path="pourquoi" element={<WhyHomizzyPage />} />
+            <Route path="pourquoi" element={<WhyEmobilePage />} />
             <Route path="profil/:userId" element={<PublicProfilePage />} />
             <Route path="faq" element={<FAQPage />} />
             <Route path="support" element={<SupportPage />} />

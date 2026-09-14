@@ -66,7 +66,7 @@ export function PublishPage() {
       <div className="page-container section text-center">
         <h1 className="text-xl font-medium">Réservé aux propriétaires</h1>
         <p className="mt-2 text-sm text-ink-300">
-          Créez un compte "Je publie des annonces" pour publier un bien sur Homizzy.
+          Créez un compte "Je publie des annonces" pour publier un bien sur Emobile.
         </p>
       </div>
     );

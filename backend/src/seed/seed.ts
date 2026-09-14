@@ -16,7 +16,7 @@ async function seed() {
   // ---------- 1. Compte administrateur ----------
   const adminEmail = (process.env.ADMIN_EMAIL || "admin@homease.bj").toLowerCase();
   const adminPassword = process.env.ADMIN_PASSWORD || "ChangeMoi123!";
-  const adminName = process.env.ADMIN_NAME || "Administrateur Homizzy";
+  const adminName = process.env.ADMIN_NAME || "Administrateur Emobile";
 
   let admin = await User.findOne({ email: adminEmail });
   if (admin) {

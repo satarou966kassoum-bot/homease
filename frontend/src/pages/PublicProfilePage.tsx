@@ -90,7 +90,7 @@ export function PublicProfilePage() {
               {profile.kycStatus === "verifie" && <VerifiedBadge compact />}
             </p>
             <p className="text-sm text-ink-300">
-              {profile.role === "owner" ? "Propriétaire / annonceur" : "Membre"} · sur Homizzy
+              {profile.role === "owner" ? "Propriétaire / annonceur" : "Membre"} · sur Emobile
               depuis {new Date(profile.createdAt).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
             </p>
             {count > 0 && (
@@ -104,7 +104,7 @@ export function PublicProfilePage() {
 
         {profile.kycStatus !== "verifie" && (
           <p className="mt-4 rounded-lg bg-sand-100 px-3 py-2 text-xs text-ink-400">
-            Ce profil n'a pas encore été vérifié par Homizzy. Restez prudent et privilégiez les
+            Ce profil n'a pas encore été vérifié par Emobile. Restez prudent et privilégiez les
             échanges via la messagerie de la plateforme.
           </p>
         )}

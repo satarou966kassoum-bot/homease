@@ -15,7 +15,7 @@ export function AdminLayout() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-10">
-      <h1 className="font-display text-2xl font-medium">Administration Homizzy</h1>
+      <h1 className="font-display text-2xl font-medium">Administration Emobile</h1>
       <div className="mt-6 grid gap-8 md:grid-cols-[200px_1fr]">
         <nav className="space-y-1">
           <NavLink to="/admin" end className={linkClass}>Vue d'ensemble</NavLink>

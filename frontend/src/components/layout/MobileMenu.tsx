@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useInstallPrompt } from "../../hooks/useInstallPrompt";
+import { AnimatedLogo } from "./AnimatedLogo";
 
 interface Props {
   open: boolean;
@@ -35,7 +36,7 @@ interface Props {
 }
 
 // Ordonné par importance : le cœur immobilier d'abord, puis les futures
-// verticales du marketplace Homizzy.
+// verticales du marketplace Emobile.
 const categoryLinks = [
   { to: "/search?category=maison", label: "Maisons", icon: Home, live: true },
   { to: "/search?category=appartement", label: "Appartements", icon: Building2, live: true },
@@ -52,7 +53,7 @@ const categoryLinks = [
 ];
 
 const infoLinks = [
-  { to: "/pourquoi", label: "Pourquoi Homizzy ?", icon: Sparkles },
+  { to: "/pourquoi", label: "Pourquoi Emobile ?", icon: Sparkles },
   { to: "/faq", label: "FAQ", icon: HelpCircle },
   { to: "/support", label: "Support", icon: LifeBuoy },
   { to: "/contact", label: "Nous contacter", icon: Mail },
@@ -80,9 +81,11 @@ export function MobileMenu({ open, onClose }: Props) {
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between border-b border-sand-200 p-4">
-          <span className="font-display text-lg font-semibold text-lagoon-500">Homizzy</span>
-          <button onClick={onClose} aria-label="Fermer le menu">
+        <div className="relative flex items-center justify-center border-b border-sand-200 p-4">
+          <span className="font-display text-lg font-semibold text-lagoon-500">
+            <AnimatedLogo />
+          </span>
+          <button onClick={onClose} aria-label="Fermer le menu" className="absolute right-4">
             <X size={20} />
           </button>
         </div>

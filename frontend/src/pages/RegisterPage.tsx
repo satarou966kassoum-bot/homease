@@ -31,7 +31,7 @@ export function RegisterPage() {
     <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-6 py-16">
       <h1 className="font-display text-3xl font-medium">Créer un compte</h1>
       <p className="mt-2 text-sm text-ink-300">
-        Rejoignez Homizzy pour rechercher ou publier des annonces.
+        Rejoignez Emobile pour rechercher ou publier des annonces.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">

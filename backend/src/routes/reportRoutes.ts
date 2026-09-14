@@ -23,7 +23,7 @@ router.post("/", protect, async (req: AuthRequest, res: Response, next: NextFunc
     });
     res.status(201).json({
       success: true,
-      message: "Signalement envoyé. Merci de contribuer à la sécurité de Homizzy.",
+      message: "Signalement envoyé. Merci de contribuer à la sécurité de Emobile.",
       data: { report },
     });
   } catch (error: any) {

@@ -28,7 +28,7 @@ export function HeroBannerCarousel({ banners }: { banners: Banner[] }) {
         <img
           key={b._id}
           src={b.imageUrl}
-          alt={b.title || "Homizzy"}
+          alt={b.title || "Emobile"}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
             i === index ? "opacity-100" : "opacity-0"
           }`}
