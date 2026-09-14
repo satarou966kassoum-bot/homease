@@ -60,19 +60,19 @@ export function DashboardStatsPage() {
   }));
 
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <div className="card p-4">
+    <div className="space-y-5">
+      <div className="grid grid-cols-3 gap-2.5">
+        <div className="card p-3">
           <Home size={18} className="text-ink-500" />
           <p className="mt-2 text-2xl font-semibold">{stats.totalListings}</p>
           <p className="text-xs text-ink-300">Annonces publiées</p>
         </div>
-        <div className="card p-4">
+        <div className="card p-3">
           <Eye size={18} className="text-ink-500" />
           <p className="mt-2 text-2xl font-semibold">{stats.totalViews}</p>
           <p className="text-xs text-ink-300">Vues cumulées</p>
         </div>
-        <div className="card p-4">
+        <div className="card p-3">
           <TrendingUp size={18} className="text-ink-500" />
           <p className="mt-2 text-2xl font-semibold">{stats.byStatus.approuvee || 0}</p>
           <p className="text-xs text-ink-300">Annonces actives</p>
@@ -80,9 +80,9 @@ export function DashboardStatsPage() {
       </div>
 
       {barData.length > 0 && (
-        <div className="card p-4">
+        <div className="card p-3">
           <p className="mb-3 text-sm font-semibold text-ink-500">Vues par annonce (top 5)</p>
-          <div className="h-64">
+          <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} margin={{ left: -20 }}>
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} angle={-15} textAnchor="end" height={50} />
@@ -96,9 +96,9 @@ export function DashboardStatsPage() {
       )}
 
       {pieData.length > 0 && (
-        <div className="card p-4">
+        <div className="card p-3">
           <p className="mb-3 text-sm font-semibold text-ink-500">Répartition par statut</p>
-          <div className="h-64">
+          <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={3}>

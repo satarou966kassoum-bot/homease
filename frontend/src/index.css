@@ -48,7 +48,7 @@
   }
 
   .section {
-    @apply py-9 sm:py-14;
+    @apply py-6 sm:py-10;
   }
 
   .btn-primary {

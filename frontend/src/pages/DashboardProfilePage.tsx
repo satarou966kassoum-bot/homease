@@ -141,17 +141,20 @@ export function DashboardProfilePage() {
 
   if (!user) return null;
 
-  const quickActions = [
-    ...(isOwner
-      ? [{ to: "/dashboard/listings", label: "Annonces", icon: Home, value: stats.listings }]
+  const tiles = [
+    ...(user.role === "owner"
+      ? [{ to: "/publish", label: "Publier", icon: PlusCircle, value: null, accent: true }]
       : []),
-    { to: "/favorites", label: "Favoris", icon: Heart, value: stats.favorites },
-    { to: "/dashboard/reservations", label: "Commandes", icon: CalendarCheck, value: stats.reservations },
-    { to: "/messages", label: "Messages", icon: MessageCircle, value: null },
+    ...(isOwner
+      ? [{ to: "/dashboard/listings", label: "Annonces", icon: Home, value: stats.listings, accent: false }]
+      : []),
+    { to: "/favorites", label: "Favoris", icon: Heart, value: stats.favorites, accent: false },
+    { to: "/dashboard/reservations", label: "Commandes", icon: CalendarCheck, value: stats.reservations, accent: false },
+    { to: "/messages", label: "Messages", icon: MessageCircle, value: null, accent: false },
   ];
 
   const barData = ownerStats?.topListings.map((l) => ({
-    name: l.title.length > 12 ? l.title.slice(0, 12) + "…" : l.title,
+    name: l.title.length > 10 ? l.title.slice(0, 10) + "…" : l.title,
     vues: l.viewsCount,
   })) || [];
 
@@ -163,11 +166,11 @@ export function DashboardProfilePage() {
     : [];
 
   return (
-    <div className="space-y-8">
-      {/* En-tête profil avec photo modifiable */}
-      <div className="card flex items-center gap-4 p-5">
-        <label className="group relative h-16 w-16 shrink-0 cursor-pointer">
-          <span className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-sand-200 text-2xl font-semibold text-ink-500">
+    <div className="space-y-5">
+      {/* En-tête profil compact avec photo modifiable */}
+      <div className="card flex items-center gap-3 p-4">
+        <label className="group relative h-12 w-12 shrink-0 cursor-pointer">
+          <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-sand-200 text-lg font-semibold text-ink-500">
             {avatarUrl ? (
               <img src={avatarUrl} alt={name} className="h-full w-full object-cover" />
             ) : (
@@ -175,7 +178,7 @@ export function DashboardProfilePage() {
             )}
           </span>
           <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 text-white opacity-0 transition-opacity group-hover:opacity-100">
-            <Camera size={18} />
+            <Camera size={14} />
           </span>
           <input
             type="file"
@@ -185,48 +188,68 @@ export function DashboardProfilePage() {
             onChange={(e) => e.target.files?.[0] && handleAvatarUpload(e.target.files[0])}
           />
         </label>
-        <div>
-          <p className="flex items-center gap-2 text-lg font-medium">
-            {name}
+        <div className="min-w-0">
+          <p className="flex items-center gap-1.5 text-base font-medium leading-tight">
+            <span className="truncate">{name}</span>
             {kycStatus === "verifie" && <VerifiedBadge compact />}
           </p>
-          <p className="text-sm text-ink-300">{user.email}</p>
-          <span className="mt-1 inline-block rounded-full bg-sand-100 px-2.5 py-0.5 text-xs font-medium text-ink-400">
-            {user.role === "admin" ? "Administrateur" : user.role === "owner" ? "Propriétaire" : "Client"}
-          </span>
+          <p className="truncate text-xs text-ink-300">{user.email}</p>
+        </div>
+        <span className="ml-auto shrink-0 rounded-full bg-sand-100 px-2.5 py-1 text-xs font-medium text-ink-400">
+          {user.role === "admin" ? "Admin" : user.role === "owner" ? "Propriétaire" : "Client"}
+        </span>
+      </div>
+
+      {/* Grille unifiée : statistiques + accès rapide, tuiles proportionnelles */}
+      <div>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-300">Aperçu</p>
+        <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
+          {isOwner && ownerStats && (
+            <>
+              <div className="card flex aspect-square flex-col items-center justify-center gap-1 p-2 text-center">
+                <Home size={17} className="text-ink-500" />
+                <span className="text-lg font-semibold leading-none">{ownerStats.totalListings}</span>
+                <span className="text-[11px] leading-tight text-ink-300">Annonces</span>
+              </div>
+              <div className="card flex aspect-square flex-col items-center justify-center gap-1 p-2 text-center">
+                <Eye size={17} className="text-ink-500" />
+                <span className="text-lg font-semibold leading-none">{ownerStats.totalViews}</span>
+                <span className="text-[11px] leading-tight text-ink-300">Vues</span>
+              </div>
+              <div className="card flex aspect-square flex-col items-center justify-center gap-1 p-2 text-center">
+                <TrendingUp size={17} className="text-ink-500" />
+                <span className="text-lg font-semibold leading-none">{ownerStats.byStatus.approuvee || 0}</span>
+                <span className="text-[11px] leading-tight text-ink-300">Actives</span>
+              </div>
+            </>
+          )}
+          {tiles.map(({ to, label, icon: Icon, value, accent }) => (
+            <Link
+              key={label}
+              to={to}
+              className={`flex aspect-square flex-col items-center justify-center gap-1 rounded-xl p-2 text-center transition-shadow hover:shadow-elevated ${
+                accent ? "bg-ink-500 text-white" : "card"
+              }`}
+            >
+              <Icon size={17} className={accent ? "text-white" : "text-ink-500"} />
+              {value !== null && <span className="text-lg font-semibold leading-none">{value}</span>}
+              <span className={`text-[11px] leading-tight ${accent ? "text-sand-100" : "text-ink-300"}`}>{label}</span>
+            </Link>
+          ))}
         </div>
       </div>
 
-      {/* Statistiques directement visibles — propriétaires */}
-      {isOwner && ownerStats && (
-        <div>
-          <p className="mb-3 text-sm font-semibold text-ink-500">Vos statistiques</p>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <div className="card p-4">
-              <Home size={18} className="text-ink-500" />
-              <p className="mt-2 text-2xl font-semibold">{ownerStats.totalListings}</p>
-              <p className="text-xs text-ink-300">Annonces publiées</p>
-            </div>
-            <div className="card p-4">
-              <Eye size={18} className="text-ink-500" />
-              <p className="mt-2 text-2xl font-semibold">{ownerStats.totalViews}</p>
-              <p className="text-xs text-ink-300">Vues cumulées</p>
-            </div>
-            <div className="card p-4">
-              <TrendingUp size={18} className="text-ink-500" />
-              <p className="mt-2 text-2xl font-semibold">{ownerStats.byStatus.approuvee || 0}</p>
-              <p className="text-xs text-ink-300">Annonces actives</p>
-            </div>
-          </div>
-
+      {/* Statistiques détaillées — propriétaires */}
+      {isOwner && ownerStats && (barData.length > 0 || pieData.length > 0) && (
+        <div className="grid gap-3 sm:grid-cols-2">
           {barData.length > 0 && (
-            <div className="card mt-3 p-4">
-              <p className="mb-2 text-sm font-semibold text-ink-500">Vues par annonce</p>
-              <div className="h-56">
+            <div className="card p-3">
+              <p className="mb-1 text-xs font-semibold text-ink-500">Vues par annonce</p>
+              <div className="h-44">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={barData} margin={{ left: -20 }}>
-                    <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} angle={-15} textAnchor="end" height={45} />
-                    <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                  <BarChart data={barData} margin={{ left: -20, top: 8 }}>
+                    <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} angle={-15} textAnchor="end" height={38} />
+                    <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
                     <Tooltip />
                     <Bar dataKey="vues" fill="#3D3B37" radius={[6, 6, 0, 0]} />
                   </BarChart>
@@ -236,17 +259,17 @@ export function DashboardProfilePage() {
           )}
 
           {pieData.length > 0 && (
-            <div className="card mt-3 p-4">
-              <p className="mb-2 text-sm font-semibold text-ink-500">Répartition par statut</p>
-              <div className="h-56">
+            <div className="card p-3">
+              <p className="mb-1 text-xs font-semibold text-ink-500">Par statut</p>
+              <div className="h-44">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={45} outerRadius={75} paddingAngle={3}>
+                    <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={36} outerRadius={58} paddingAngle={3}>
                       {pieData.map((_, i) => (
                         <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                       ))}
                     </Pie>
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
                     <Tooltip />
                   </PieChart>
                 </ResponsiveContainer>
@@ -254,73 +277,45 @@ export function DashboardProfilePage() {
             </div>
           )}
 
-          <Link to="/dashboard/stats" className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-ink-500">
-            <BarChart3 size={14} /> Voir toutes les statistiques
+          <Link to="/dashboard/stats" className="inline-flex items-center gap-1 text-xs font-medium text-ink-500 sm:col-span-2">
+            <BarChart3 size={13} /> Voir toutes les statistiques
           </Link>
         </div>
       )}
 
-      {/* Actions rapides */}
-      <div>
-        <p className="mb-3 text-sm font-semibold text-ink-500">Accès rapide</p>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {user.role === "owner" && (
-            <Link
-              to="/publish"
-              className="card flex flex-col items-center justify-center gap-2 p-4 text-center text-ink-500 hover:shadow-elevated"
-            >
-              <PlusCircle size={20} />
-              <span className="text-xs font-medium">Publier</span>
-            </Link>
-          )}
-          {quickActions.map(({ to, label, icon: Icon, value }) => (
-            <Link
-              key={label}
-              to={to}
-              className="card flex flex-col items-center justify-center gap-2 p-4 text-center hover:shadow-elevated"
-            >
-              <Icon size={20} className="text-ink-500" />
-              {value !== null && <span className="text-lg font-semibold">{value}</span>}
-              <span className="text-xs font-medium text-ink-400">{label}</span>
-            </Link>
-          ))}
-        </div>
-      </div>
-
       {/* Vérification KYC — propriétaires uniquement */}
       {isOwner && (
-        <div className="card p-5">
+        <div className="card p-4">
           <p className="text-sm font-semibold text-ink-500">Vérification du profil (KYC)</p>
-          <p className="mt-1 text-sm text-ink-300">
-            Faites vérifier votre identité pour obtenir le badge "Annonceur vérifié" et
-            inspirer davantage confiance auprès des clients.
+          <p className="mt-0.5 text-xs text-ink-300">
+            Obtenez le badge "Annonceur vérifié" pour inspirer confiance auprès des clients.
           </p>
 
-          <div className="mt-4">
+          <div className="mt-3">
             {kycStatus === "verifie" && (
-              <div className="flex items-center gap-2 rounded-lg bg-sand-100 px-4 py-3 text-sm text-ink-500">
-                <ShieldCheck size={18} />
-                Votre profil est vérifié. Le badge est actif sur vos annonces.
+              <div className="flex items-center gap-2 rounded-lg bg-sand-100 px-3 py-2.5 text-xs text-ink-500">
+                <ShieldCheck size={16} />
+                Profil vérifié — badge actif sur vos annonces.
               </div>
             )}
             {kycStatus === "en_attente" && (
-              <div className="flex items-center gap-2 rounded-lg bg-sand-200 px-4 py-3 text-sm text-ink-500">
-                <Clock size={18} />
-                Document envoyé — vérification en cours par un administrateur.
+              <div className="flex items-center gap-2 rounded-lg bg-sand-200 px-3 py-2.5 text-xs text-ink-500">
+                <Clock size={16} />
+                Document envoyé — vérification en cours.
               </div>
             )}
             {kycStatus === "rejete" && (
-              <div className="flex items-center gap-2 rounded-lg bg-clay-500/10 px-4 py-3 text-sm text-clay-600">
-                <XCircle size={18} />
-                Vérification refusée. Vous pouvez soumettre un nouveau document.
+              <div className="flex items-center gap-2 rounded-lg bg-clay-500/10 px-3 py-2.5 text-xs text-clay-600">
+                <XCircle size={16} />
+                Vérification refusée — soumettez un nouveau document.
               </div>
             )}
 
             {(kycStatus === "non_soumis" || kycStatus === "rejete") && (
-              <label className="mt-3 flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-sand-200 p-6 text-center hover:border-ink-400">
-                <UploadCloud size={22} className="text-ink-500" />
-                <span className="text-sm text-ink-400">
-                  {kycUploading ? "Envoi en cours..." : "Téléverser une pièce d'identité (CIP, passeport...)"}
+              <label className="mt-2 flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border-2 border-dashed border-sand-200 p-4 text-center hover:border-ink-400">
+                <UploadCloud size={19} className="text-ink-500" />
+                <span className="text-xs text-ink-400">
+                  {kycUploading ? "Envoi en cours..." : "Téléverser une pièce d'identité"}
                 </span>
                 <input
                   type="file"
@@ -331,31 +326,32 @@ export function DashboardProfilePage() {
                 />
               </label>
             )}
-            {kycError && <p className="mt-2 text-sm text-clay-600">{kycError}</p>}
+            {kycError && <p className="mt-1.5 text-xs text-clay-600">{kycError}</p>}
           </div>
         </div>
       )}
 
       {/* Modifier le profil */}
-      <div className="card max-w-md p-5">
-        <p className="text-sm font-semibold text-ink-500">Modifier mes informations</p>
+      <div className="card p-4">
+        <p className="text-sm font-semibold text-ink-500">Mes informations</p>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          {message && <p className="text-sm text-ink-500">{message}</p>}
+        <form onSubmit={handleSubmit} className="mt-3 space-y-3">
+          {message && <p className="text-xs text-ink-500">{message}</p>}
 
-          <div>
-            <label className="mb-1 block text-sm font-medium">Nom</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} className="input-field" />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs font-medium text-ink-400">Nom</label>
+              <input value={name} onChange={(e) => setName(e.target.value)} className="input-field" />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-ink-400">Téléphone</label>
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} className="input-field" />
+            </div>
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium">Email</label>
+            <label className="mb-1 block text-xs font-medium text-ink-400">Email</label>
             <input value={user.email} disabled className="input-field bg-sand-100 text-ink-300" />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium">Téléphone</label>
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} className="input-field" />
           </div>
 
           <button type="submit" className="btn-primary">Enregistrer</button>

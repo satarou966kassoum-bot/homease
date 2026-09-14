@@ -44,6 +44,7 @@ export function DashboardMobileMenu({ open, onClose }: Props) {
         </div>
 
         <nav className="flex flex-col gap-1 p-2">
+          <NavLink to="/" end className={linkClass} onClick={onClose}>Accueil</NavLink>
           {isOwner ? (
             <>
               <NavLink to="/dashboard" end className={linkClass} onClick={onClose}>Vue d'ensemble</NavLink>

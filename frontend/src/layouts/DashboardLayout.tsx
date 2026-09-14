@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { NavLink, Outlet, Navigate, Link } from "react-router-dom";
-import { Menu, Home } from "lucide-react";
+import { NavLink, Outlet, Navigate } from "react-router-dom";
+import { Menu } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { DashboardMobileMenu } from "../components/layout/DashboardMobileMenu";
 import { NotificationBell } from "../components/layout/NotificationBell";
@@ -22,8 +22,8 @@ export function DashboardLayout() {
   return (
     <div className="min-h-screen bg-sand-50">
       {/* En-tête propre au tableau de bord — un seul menu, thème blanc/beige */}
-      <header className="flex items-center justify-between border-b border-sand-200 bg-white px-4 py-3">
-        <div className="flex items-center gap-3">
+      <header className="flex items-center justify-between border-b border-sand-200 bg-white px-4 py-2.5">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={() => setMenuOpen(true)}
             aria-label="Ouvrir le menu du tableau de bord"
@@ -31,26 +31,19 @@ export function DashboardLayout() {
           >
             <Menu size={18} className="text-ink-500" />
           </button>
-          <h1 className="font-display text-xl font-medium text-ink-500 sm:text-2xl">Tableau de bord</h1>
+          <h1 className="font-display text-lg font-medium text-ink-500 sm:text-xl">Tableau de bord</h1>
         </div>
-        <div className="flex items-center gap-3">
-          <NotificationBell />
-          <Link
-            to="/"
-            aria-label="Retour à l'accueil"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-sand-200 text-ink-400 hover:bg-sand-100"
-          >
-            <Home size={16} />
-          </Link>
-        </div>
+        <NotificationBell />
       </header>
 
       <DashboardMobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      <div className="page-container section">
-        <div className="grid gap-8 md:grid-cols-[210px_1fr]">
+      <div className="page-container py-5 sm:py-7">
+        <div className="grid gap-6 md:grid-cols-[190px_1fr]">
           {/* Barre latérale persistante — desktop uniquement */}
-          <nav className="hidden space-y-1 md:block">
+          <nav className="hidden space-y-0.5 md:block">
+            <NavLink to="/" end className={linkClass}>Accueil</NavLink>
+            <div className="my-1.5 border-t border-sand-200" />
             {isOwner ? (
               <>
                 <NavLink to="/dashboard" end className={linkClass}>Vue d'ensemble</NavLink>
@@ -68,7 +61,7 @@ export function DashboardLayout() {
                 <NavLink to="/dashboard/messages" className={linkClass}>Messages</NavLink>
               </>
             )}
-            <div className="my-2 border-t border-sand-200" />
+            <div className="my-1.5 border-t border-sand-200" />
             <button
               onClick={logout}
               className="block w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-clay-500 hover:bg-sand-100"
