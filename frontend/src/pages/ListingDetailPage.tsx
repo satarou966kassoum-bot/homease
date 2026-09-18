@@ -171,7 +171,7 @@ export function ListingDetailPage() {
   const canReserve = listing.transactionType === "reservation" || listing.transactionType === "location";
 
   return (
-    <div className="page-container py-6 pb-20 sm:py-10 md:pb-10">
+    <div className="page-container py-5 sm:py-8">
       {/* Galerie défilable (swipe) style e-commerce */}
       {media.length > 0 ? (
         <>
@@ -233,7 +233,7 @@ export function ListingDetailPage() {
         </div>
       )}
 
-      <div className="mt-6 grid gap-10 md:grid-cols-3">
+      <div className="mt-4 grid gap-6 md:grid-cols-3">
         <div className="md:col-span-2">
           <span className="inline-block rounded-full bg-lagoon-50 px-3 py-1 text-xs font-medium text-lagoon-600">
             {transactionLabels[listing.transactionType]} · {categoryLabels[listing.category]}
@@ -266,7 +266,7 @@ export function ListingDetailPage() {
             )}
           </div>
 
-          <p className="mt-6 whitespace-pre-line text-sm leading-relaxed text-ink-400">
+          <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-ink-400">
             {listing.description}
           </p>
 
@@ -283,7 +283,7 @@ export function ListingDetailPage() {
             </div>
           )}
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-5 flex flex-wrap gap-2">
             {favorite.isLoggedIn && (
               <button onClick={favorite.toggle} className="btn-ghost">
                 <Heart size={16} fill={favorite.isFavorite ? "currentColor" : "none"} />
@@ -321,7 +321,7 @@ export function ListingDetailPage() {
           )}
         </div>
 
-        <aside ref={actionsRef} className="card h-fit p-5">
+        <aside ref={actionsRef} className="card h-fit p-4">
           <p className="text-2xl font-semibold text-lagoon-600">
             {formatFCFA(listing.price)}
             {listing.transactionType === "location" && (
@@ -330,7 +330,7 @@ export function ListingDetailPage() {
           </p>
 
           {owner && (
-            <Link to={`/profil/${ownerId}`} className="mt-4 flex items-center gap-3 hover:opacity-80">
+            <Link to={`/profil/${ownerId}`} className="mt-3 flex items-center gap-3 hover:opacity-80">
               <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-lagoon-50 font-medium text-lagoon-600">
                 {(owner as any).avatarUrl ? (
                   <img src={(owner as any).avatarUrl} alt={owner.name} className="h-full w-full object-cover" />
@@ -349,7 +349,7 @@ export function ListingDetailPage() {
           )}
 
           {user ? (
-            <Link to={`/listing/${listing._id}/visite`} className="btn-primary mt-5 w-full py-3.5 text-base">
+            <Link to={`/listing/${listing._id}/visite`} className="btn-primary mt-4 w-full py-3 text-base">
               Demander une visite guidée
             </Link>
           ) : (
@@ -361,30 +361,13 @@ export function ListingDetailPage() {
       </div>
 
       {similar.length > 0 && (
-        <div className="mt-14">
+        <div className="mt-8">
           <h2 className="text-xl font-medium">Annonces similaires</h2>
-          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {similar.map((s) => (
               <PropertyCard key={s._id} listing={s} />
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Barre d'action flottante mobile — style fiche produit e-commerce */}
-      {user && (
-        <div className="fixed inset-x-0 bottom-0 z-20 flex gap-2 border-t border-sand-200 bg-white/95 p-3 backdrop-blur md:hidden">
-          <div className="flex flex-1 flex-col justify-center">
-            <p className="text-sm font-semibold text-lagoon-600">
-              {formatFCFA(listing.price)}
-              {listing.transactionType === "location" && (
-                <span className="text-xs font-normal text-ink-300"> /mois</span>
-              )}
-            </p>
-          </div>
-          <Link to={`/listing/${listing._id}/visite`} className="btn-primary px-4 py-2.5 text-sm">
-            Demander une visite guidée
-          </Link>
         </div>
       )}
     </div>
