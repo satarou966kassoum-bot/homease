@@ -2,7 +2,9 @@ import { Router } from "express";
 import {
   getReservations,
   createReservation,
-  updateReservationStatus,
+  proposeAppointment,
+  respondToAppointment,
+  submitHandoverProof,
 } from "../controllers/reservationController";
 import { protect } from "../middlewares/auth";
 
@@ -11,6 +13,8 @@ const router = Router();
 router.use(protect);
 router.get("/", getReservations);
 router.post("/", createReservation);
-router.put("/:id", updateReservationStatus);
+router.put("/:id/appointment", proposeAppointment);
+router.put("/:id/respond", respondToAppointment);
+router.put("/:id/proof", submitHandoverProof);
 
 export default router;

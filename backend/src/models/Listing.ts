@@ -38,6 +38,7 @@ export interface IListing extends Document {
   videos: string[];
   mapsUrl?: string;
   boostRequested: boolean;
+  guidedTourVideoUrl?: string;
   status: ListingStatus;
   isDemo: boolean;
   isFeatured: boolean;
@@ -82,6 +83,7 @@ const ListingSchema = new Schema<IListing>(
     videos: { type: [String], default: [] },
     mapsUrl: { type: String },
     boostRequested: { type: Boolean, default: false },
+    guidedTourVideoUrl: { type: String },
     status: {
       type: String,
       enum: [

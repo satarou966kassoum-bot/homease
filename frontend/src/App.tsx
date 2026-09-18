@@ -25,6 +25,7 @@ import {
 } from "./pages/StaticPages";
 import { WhyEmobilePage } from "./pages/WhyEmobilePage";
 import { PublicProfilePage } from "./pages/PublicProfilePage";
+import { GuidedTourPage } from "./pages/GuidedTourPage";
 
 // Chargées à la demande seulement : évite d'alourdir le chargement initial
 // de l'accueil avec le code du tableau de bord/admin (graphiques recharts, etc.)
@@ -61,6 +62,7 @@ export default function App() {
               <Route path="rent" element={<SearchPage />} />
               <Route path="land" element={<SearchPage />} />
               <Route path="listing/:id" element={<ListingDetailPage />} />
+              <Route path="listing/:id/visite" element={<GuidedTourPage />} />
               <Route path="publish" element={<PublishPage />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />

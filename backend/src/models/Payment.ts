@@ -8,6 +8,8 @@ export interface IPayment extends Document {
   listing: Types.ObjectId;
   payer: Types.ObjectId;
   amount: number;
+  platformFeeAmount: number;
+  ownerAmount: number;
   provider: PaymentProvider;
   status: PaymentStatus;
   providerReference?: string;
@@ -21,6 +23,8 @@ const PaymentSchema = new Schema<IPayment>(
     listing: { type: Schema.Types.ObjectId, ref: "Listing", required: true },
     payer: { type: Schema.Types.ObjectId, ref: "User", required: true },
     amount: { type: Number, required: true, min: 0 },
+    platformFeeAmount: { type: Number, required: true, min: 0 },
+    ownerAmount: { type: Number, required: true, min: 0 },
     provider: {
       type: String,
       enum: ["kkiapay", "fedapay", "hors_plateforme"],

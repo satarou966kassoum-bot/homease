@@ -23,21 +23,45 @@ export const Favorite: Model<IFavorite> =
 
 /* --------------------------- Reservation --------------------------- */
 
+// Machine à états du parcours "visite guidée → réservation → remise → paiement" :
+// en_attente          : le client a réservé, en attente que le propriétaire propose un rendez-vous
+// rdv_propose         : le propriétaire a soumis jour/heure/lieu, en attente de réponse du client
+// attente_nouveau_rdv : le client a refusé le créneau (pas l'horaire) et donné ses disponibilités
+// rdv_accepte         : le client a accepté le rendez-vous — les deux avertissements sécurité sont envoyés
+// bien_remis          : le propriétaire a envoyé la preuve photo — le client peut payer
+// payee               : le paiement a été effectué, la plateforme a prélevé sa commission
+// annulee             : le client ne veut plus du bien, ou annulation
 export type ReservationStatus =
   | "en_attente"
-  | "confirmee"
-  | "refusee"
-  | "annulee"
-  | "terminee";
+  | "rdv_propose"
+  | "attente_nouveau_rdv"
+  | "rdv_accepte"
+  | "bien_remis"
+  | "payee"
+  | "annulee";
+
+export type DeclineReason = "ne_veut_plus" | "horaire_inadapte";
 
 export interface IReservation extends Document {
   listing: Types.ObjectId;
   client: Types.ObjectId;
   owner: Types.ObjectId;
-  startDate: Date;
-  endDate?: Date;
-  message?: string;
+  clientFullName: string;
   status: ReservationStatus;
+
+  // Proposition de rendez-vous par le propriétaire
+  appointmentDate?: Date;
+  appointmentTime?: string;
+  appointmentLocation?: string;
+  appointmentMapsUrl?: string;
+
+  // Réponse du client en cas de refus pour raison d'horaire
+  declineReason?: DeclineReason;
+  clientAvailability?: string;
+
+  // Preuve de remise du bien (photo prise par le propriétaire)
+  proofPhotoUrl?: string;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -47,14 +71,27 @@ const ReservationSchema = new Schema<IReservation>(
     listing: { type: Schema.Types.ObjectId, ref: "Listing", required: true },
     client: { type: Schema.Types.ObjectId, ref: "User", required: true },
     owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    startDate: { type: Date, required: true },
-    endDate: { type: Date },
-    message: { type: String, maxlength: 1000 },
+    clientFullName: { type: String, required: true, trim: true, maxlength: 120 },
     status: {
       type: String,
-      enum: ["en_attente", "confirmee", "refusee", "annulee", "terminee"],
+      enum: [
+        "en_attente",
+        "rdv_propose",
+        "attente_nouveau_rdv",
+        "rdv_accepte",
+        "bien_remis",
+        "payee",
+        "annulee",
+      ],
       default: "en_attente",
     },
+    appointmentDate: { type: Date },
+    appointmentTime: { type: String },
+    appointmentLocation: { type: String },
+    appointmentMapsUrl: { type: String },
+    declineReason: { type: String, enum: ["ne_veut_plus", "horaire_inadapte"] },
+    clientAvailability: { type: String, maxlength: 500 },
+    proofPhotoUrl: { type: String },
   },
   { timestamps: true }
 );
@@ -62,6 +99,7 @@ const ReservationSchema = new Schema<IReservation>(
 export const Reservation: Model<IReservation> =
   mongoose.models.Reservation ||
   mongoose.model<IReservation>("Reservation", ReservationSchema);
+
 
 /* -------------------------- Conversation --------------------------- */
 
@@ -128,7 +166,13 @@ export type NotificationType =
   | "annonce_approuvee"
   | "annonce_rejetee"
   | "nouveau_message"
-  | "annonce_expiree";
+  | "annonce_expiree"
+  | "rdv_propose"
+  | "rdv_accepte"
+  | "rdv_refuse"
+  | "nouvelle_disponibilite"
+  | "bien_remis"
+  | "paiement_effectue";
 
 export interface INotification extends Document {
   user: Types.ObjectId;
@@ -153,6 +197,12 @@ const NotificationSchema = new Schema<INotification>(
         "annonce_rejetee",
         "nouveau_message",
         "annonce_expiree",
+        "rdv_propose",
+        "rdv_accepte",
+        "rdv_refuse",
+        "nouvelle_disponibilite",
+        "bien_remis",
+        "paiement_effectue",
       ],
       required: true,
     },

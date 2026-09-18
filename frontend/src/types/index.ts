@@ -51,6 +51,7 @@ export interface Listing {
   videos: string[];
   mapsUrl?: string;
   boostRequested?: boolean;
+  guidedTourVideoUrl?: string;
   status: ListingStatus;
   isDemo: boolean;
   isFeatured: boolean;

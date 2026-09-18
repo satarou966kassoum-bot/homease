@@ -349,48 +349,12 @@ export function ListingDetailPage() {
           )}
 
           {user ? (
-            <>
-              <button onClick={() => setShowContact((v) => !v)} className="btn-primary mt-5 w-full">
-                Contacter
-              </button>
-              {showContact && (
-                <div className="mt-3 space-y-2">
-                  <textarea
-                    value={contactMessage}
-                    onChange={(e) => setContactMessage(e.target.value)}
-                    rows={3}
-                    className="input-field"
-                  />
-                  <button onClick={handleSendContact} className="btn-ghost w-full">Envoyer</button>
-                  {contactStatus && <p className="text-center text-xs text-ink-300">{contactStatus}</p>}
-                </div>
-              )}
-
-              {canReserve && (
-                <>
-                  <button onClick={() => setShowReserve((v) => !v)} className="btn-accent mt-3 w-full">
-                    Réserver
-                  </button>
-                  {showReserve && (
-                    <div className="mt-3 space-y-2">
-                      <input
-                        type="date"
-                        value={reserveDate}
-                        onChange={(e) => setReserveDate(e.target.value)}
-                        className="input-field"
-                      />
-                      <button onClick={handleReserve} className="btn-ghost w-full">
-                        Envoyer la demande
-                      </button>
-                      {reserveStatus && <p className="text-center text-xs text-ink-300">{reserveStatus}</p>}
-                    </div>
-                  )}
-                </>
-              )}
-            </>
+            <Link to={`/listing/${listing._id}/visite`} className="btn-primary mt-5 w-full py-3.5 text-base">
+              Demander une visite guidée
+            </Link>
           ) : (
             <p className="mt-3 text-center text-xs text-ink-300">
-              <Link to="/login" className="text-lagoon-500">Connectez-vous</Link> pour contacter ou réserver.
+              <Link to="/login" className="text-lagoon-500">Connectez-vous</Link> pour demander une visite guidée.
             </p>
           )}
         </aside>
@@ -418,14 +382,9 @@ export function ListingDetailPage() {
               )}
             </p>
           </div>
-          <button onClick={() => focusActions(false)} className="btn-ghost px-4 py-2.5 text-sm">
-            Contacter
-          </button>
-          {canReserve && (
-            <button onClick={() => focusActions(true)} className="btn-accent px-4 py-2.5 text-sm">
-              Réserver
-            </button>
-          )}
+          <Link to={`/listing/${listing._id}/visite`} className="btn-primary px-4 py-2.5 text-sm">
+            Demander une visite guidée
+          </Link>
         </div>
       )}
     </div>

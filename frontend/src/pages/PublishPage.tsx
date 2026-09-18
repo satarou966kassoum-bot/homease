@@ -1,9 +1,11 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Video, X } from "lucide-react";
 import { api } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import { categoryLabels } from "../utils/format";
 import { MediaUploader } from "../components/listings/MediaUploader";
+import { uploadMedia } from "../services/upload";
 
 export function PublishPage() {
   const { user } = useAuth();
@@ -28,6 +30,8 @@ export function PublishPage() {
   });
   const [photos, setPhotos] = useState<string[]>([]);
   const [videos, setVideos] = useState<string[]>([]);
+  const [guidedTourVideoUrl, setGuidedTourVideoUrl] = useState("");
+  const [isUploadingTour, setIsUploadingTour] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,6 +60,7 @@ export function PublishPage() {
         });
         setPhotos(l.photos || []);
         setVideos(l.videos || []);
+        setGuidedTourVideoUrl(l.guidedTourVideoUrl || "");
       })
       .catch(() => setError("Impossible de charger cette annonce."))
       .finally(() => setIsLoadingListing(false));
@@ -92,6 +97,7 @@ export function PublishPage() {
       surfaceM2: form.surfaceM2 ? Number(form.surfaceM2) : undefined,
       photos,
       videos,
+      guidedTourVideoUrl: guidedTourVideoUrl || undefined,
     };
     try {
       if (isEditing) {
@@ -152,6 +158,51 @@ export function PublishPage() {
             setVideos(media.videos);
           }}
         />
+
+        {/* Vidéo de visite guidée — remplace le contact direct par une visite en autonomie */}
+        <div>
+          <label className="mb-1.5 block text-sm font-medium">Vidéo de visite guidée</label>
+          <p className="mb-2 text-xs text-ink-300">
+            Cette vidéo remplace la visite physique initiale : le client la regarde avant de
+            décider de réserver.
+          </p>
+          {guidedTourVideoUrl ? (
+            <div className="relative overflow-hidden rounded-lg border border-sand-200">
+              <video src={guidedTourVideoUrl} controls className="max-h-64 w-full" />
+              <button
+                type="button"
+                onClick={() => setGuidedTourVideoUrl("")}
+                className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ) : (
+            <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-sand-200 p-6 text-center hover:border-lagoon-500">
+              <Video size={22} className="text-lagoon-500" />
+              <span className="text-sm text-ink-400">
+                {isUploadingTour ? "Envoi en cours..." : "Choisir une vidéo (max 50 Mo)"}
+              </span>
+              <input
+                type="file"
+                accept="video/*"
+                className="hidden"
+                disabled={isUploadingTour}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setIsUploadingTour(true);
+                  try {
+                    const result = await uploadMedia(file);
+                    setGuidedTourVideoUrl(result.url);
+                  } finally {
+                    setIsUploadingTour(false);
+                  }
+                }}
+              />
+            </label>
+          )}
+        </div>
 
         {/* 3. Description */}
         <div>

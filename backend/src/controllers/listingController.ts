@@ -29,6 +29,7 @@ const createSchema = z.object({
   photos: z.array(z.string()).optional(),
   videos: z.array(z.string()).optional(),
   mapsUrl: z.string().optional(),
+  guidedTourVideoUrl: z.string().optional(),
 });
 
 // GET /api/listings — recherche + filtres + tri + pagination

@@ -2,6 +2,7 @@ import { Response, NextFunction } from "express";
 import { User } from "../models/User";
 import { Listing } from "../models/Listing";
 import { Reservation, Report, Notification } from "../models";
+import { Payment } from "../models/Payment";
 import { AppError } from "../middlewares/errorHandler";
 import { AuthRequest } from "../middlewares/auth";
 
@@ -16,6 +17,7 @@ export async function getStats(req: AuthRequest, res: Response, next: NextFuncti
       recentUsers,
       openReports,
       pendingKyc,
+      commissionAgg,
     ] = await Promise.all([
       User.countDocuments(),
       Listing.countDocuments(),
@@ -25,7 +27,10 @@ export async function getStats(req: AuthRequest, res: Response, next: NextFuncti
       User.find().sort({ createdAt: -1 }).limit(5).select("name email role createdAt"),
       Report.countDocuments({ status: "ouvert" }),
       User.countDocuments({ kycStatus: "en_attente" }),
+      Payment.aggregate([{ $group: { _id: null, total: { $sum: "$platformFeeAmount" } } }]),
     ]);
+
+    const totalCommissions = commissionAgg[0]?.total || 0;
 
     res.json({
       success: true,
@@ -37,6 +42,7 @@ export async function getStats(req: AuthRequest, res: Response, next: NextFuncti
         totalReservations,
         openReports,
         pendingKyc,
+        totalCommissions,
         recentUsers,
       },
     });
