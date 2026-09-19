@@ -348,14 +348,18 @@ export function ListingDetailPage() {
             </Link>
           )}
 
-          {user ? (
-            <Link to={`/listing/${listing._id}/visite`} className="btn-primary mt-4 w-full py-3 text-base">
-              Demander une visite guidée
-            </Link>
-          ) : (
+          {!user ? (
             <p className="mt-3 text-center text-xs text-ink-300">
               <Link to="/login" className="text-lagoon-500">Connectez-vous</Link> pour demander une visite guidée.
             </p>
+          ) : user.role !== "client" ? (
+            <p className="mt-4 rounded-lg bg-sand-100 px-3 py-2.5 text-center text-xs text-ink-400">
+              Réservé aux comptes clients.
+            </p>
+          ) : (
+            <Link to={`/listing/${listing._id}/visite`} className="btn-primary mt-4 w-full py-3 text-base">
+              Demander une visite guidée
+            </Link>
           )}
         </aside>
       </div>

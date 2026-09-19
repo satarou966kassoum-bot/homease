@@ -36,6 +36,13 @@ export async function createReservation(
   next: NextFunction
 ) {
   try {
+    if (req.userRole !== "client") {
+      throw new AppError(
+        "Seuls les comptes clients peuvent réserver un bien. Les propriétaires ne peuvent pas réserver.",
+        403
+      );
+    }
+
     const data = createSchema.parse(req.body);
     const listing = await Listing.findById(data.listingId);
     if (!listing) throw new AppError("Annonce introuvable.", 404);

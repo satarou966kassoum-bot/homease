@@ -88,7 +88,16 @@ export function GuidedTourPage() {
         )}
       </div>
 
-      {!showForm ? (
+      {!user ? (
+        <p className="mt-5 text-center text-sm text-ink-300">
+          <Link to="/login" className="text-lagoon-500">Connectez-vous</Link> pour réserver ce bien.
+        </p>
+      ) : user.role !== "client" ? (
+        <p className="mt-5 rounded-lg bg-sand-100 px-4 py-3 text-center text-sm text-ink-400">
+          Seuls les comptes clients peuvent réserver un bien. Vous êtes connecté avec un compte{" "}
+          {user.role === "owner" ? "propriétaire" : "administrateur"}.
+        </p>
+      ) : !showForm ? (
         <button onClick={() => setShowForm(true)} className="btn-primary mt-5 w-full py-3.5 text-base">
           Je réserve
         </button>
