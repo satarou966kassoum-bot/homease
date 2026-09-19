@@ -148,11 +148,11 @@ export async function createListing(
     const listing = await Listing.create({
       ...data,
       owner: req.userId,
-      status: "en_attente",
+      status: "approuvee",
     });
     res.status(201).json({
       success: true,
-      message: "Annonce publiée. Elle est en attente de validation par un administrateur.",
+      message: "Annonce publiée avec succès et visible immédiatement sur la plateforme.",
       data: { listing },
     });
   } catch (error: any) {
@@ -176,9 +176,6 @@ export async function updateListing(
     }
 
     Object.assign(listing, req.body);
-    if (isOwner && req.userRole !== "admin") {
-      listing.status = "en_attente"; // repasse en modération après modification
-    }
     await listing.save();
 
     res.json({ success: true, message: "Annonce mise à jour.", data: { listing } });

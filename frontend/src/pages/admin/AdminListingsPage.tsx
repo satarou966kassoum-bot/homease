@@ -14,7 +14,7 @@ const statuses = [
 
 export function AdminListingsPage() {
   const [listings, setListings] = useState<Listing[]>([]);
-  const [status, setStatus] = useState("en_attente");
+  const [status, setStatus] = useState("approuvee");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

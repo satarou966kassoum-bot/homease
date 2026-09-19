@@ -121,13 +121,13 @@ export function PublishPage() {
       </h1>
       <p className="mt-1 text-sm text-ink-300">
         {isEditing
-          ? "Les modifications repasseront l'annonce en attente de validation."
-          : "Votre annonce sera visible après validation par un administrateur."}
+          ? "Vos modifications seront visibles immédiatement."
+          : "Votre annonce sera visible immédiatement sur la plateforme."}
       </p>
 
       {success && (
         <p className="mt-4 rounded-lg border border-lagoon-500/30 bg-lagoon-50 px-4 py-3 text-sm text-lagoon-600">
-          {isEditing ? "Annonce mise à jour avec succès." : "Annonce publiée avec succès. Statut : en attente de validation."}
+          {isEditing ? "Annonce mise à jour avec succès." : "Annonce publiée avec succès et visible immédiatement."}
         </p>
       )}
       {error && (
