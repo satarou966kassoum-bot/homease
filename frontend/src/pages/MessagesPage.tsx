@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Send, Paperclip, Mic, Square, Phone } from "lucide-react";
+import { Camera, Mic, Square, Phone, ArrowLeft } from "lucide-react";
 import { api } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import { uploadMedia } from "../services/upload";
@@ -34,6 +34,7 @@ export function MessagesPage() {
   const { user } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [showThreadOnMobile, setShowThreadOnMobile] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -73,6 +74,11 @@ export function MessagesPage() {
 
   function otherParticipant(c: Conversation) {
     return c.participants.find((p) => p._id !== user!.id)?.name || "Utilisateur";
+  }
+
+  function openConversation(id: string) {
+    setActiveId(id);
+    setShowThreadOnMobile(true);
   }
 
   async function handleSendText() {
@@ -138,24 +144,25 @@ export function MessagesPage() {
 
   return (
     <div className="page-container section">
-      <h1 className="font-display text-2xl font-medium">Messages</h1>
+      <h1 className="hidden font-display text-2xl font-medium sm:block">Messages</h1>
 
       {isLoading ? (
         <p className="mt-6 text-sm text-ink-300">Chargement...</p>
       ) : conversations.length === 0 ? (
-        <p className="mt-6 rounded-lg border border-dashed border-sand-200 p-10 text-center text-sm text-ink-300">
+        <p className="mt-6 rounded-xl border border-dashed border-sand-200 p-10 text-center text-sm text-ink-300">
           Vous n'avez pas encore de conversation. Contactez un propriétaire depuis une
           annonce pour démarrer une discussion.
         </p>
       ) : (
-        <div className="mt-6 grid gap-4 overflow-hidden rounded-xl border border-sand-200 bg-white md:grid-cols-[220px_1fr]">
-          <div className="divide-y divide-sand-200 border-b border-sand-200 md:border-b-0 md:border-r">
+        <div className="mt-0 overflow-hidden rounded-xl border border-sand-200 bg-white sm:mt-6 sm:grid sm:grid-cols-[220px_1fr] sm:gap-0">
+          {/* Liste des conversations — cachée sur mobile une fois un fil ouvert */}
+          <div className={`divide-y divide-sand-200 sm:block sm:border-r sm:border-sand-200 ${showThreadOnMobile ? "hidden" : "block"}`}>
             {conversations.map((c) => (
               <button
                 key={c._id}
-                onClick={() => setActiveId(c._id)}
+                onClick={() => openConversation(c._id)}
                 className={`block w-full p-3 text-left text-sm ${
-                  activeId === c._id ? "bg-lagoon-50" : "hover:bg-sand-50"
+                  activeId === c._id ? "bg-sand-100" : "hover:bg-sand-50"
                 }`}
               >
                 <p className="font-medium">{otherParticipant(c)}</p>
@@ -164,62 +171,71 @@ export function MessagesPage() {
             ))}
           </div>
 
-          <div className="flex h-[65vh] flex-col">
-            {/* En-tête façon réseau social : profil cliquable + appel */}
+          {/* Fil de discussion */}
+          <div className={`flex h-[75vh] flex-col sm:flex sm:h-[65vh] ${showThreadOnMobile ? "flex" : "hidden"}`}>
             {other && (
-              <div className="flex items-center justify-between border-b border-sand-100 p-3">
-                <Link to={`/profil/${other._id}`} className="flex items-center gap-2.5">
-                  <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-lagoon-50 text-sm font-semibold text-lagoon-600">
-                    {other.avatarUrl ? (
-                      <img src={other.avatarUrl} alt={other.name} className="h-full w-full object-cover" />
-                    ) : (
-                      other.name.charAt(0).toUpperCase()
-                    )}
-                  </span>
-                  <span className="flex items-center gap-1.5 text-sm font-medium">
-                    {other.name}
-                    {other.kycStatus === "verifie" && <VerifiedBadge compact />}
-                  </span>
-                </Link>
-                {other.phone && (
-                  <a
-                    href={`tel:${other.phone}`}
-                    aria-label="Appeler"
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-lagoon-50 text-lagoon-600"
+              <div className="flex items-center justify-between border-b border-sand-100 bg-white p-3">
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={() => setShowThreadOnMobile(false)}
+                    aria-label="Retour aux conversations"
+                    className="sm:hidden"
                   >
-                    <Phone size={16} />
+                    <ArrowLeft size={20} className="text-ink-500" />
+                  </button>
+                  <Link to={`/profil/${other._id}`} className="flex items-center gap-2.5">
+                    <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-lagoon-500 text-sm font-semibold text-white">
+                      {other.avatarUrl ? (
+                        <img src={other.avatarUrl} alt={other.name} className="h-full w-full object-cover" />
+                      ) : (
+                        other.name.charAt(0).toUpperCase()
+                      )}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-base font-semibold text-ink-500">
+                      {other.name}
+                      {other.kycStatus === "verifie" && <VerifiedBadge compact />}
+                    </span>
+                  </Link>
+                </div>
+                {other.phone && (
+                  <a href={`tel:${other.phone}`} aria-label="Appeler" className="text-ink-500">
+                    <Phone size={22} />
                   </a>
                 )}
               </div>
             )}
 
-            <div className="flex-1 space-y-3 overflow-y-auto p-4">
-              {messages.map((m) => {
-                const isMine = m.sender === user.id;
-                return (
-                  <div
-                    key={m._id}
-                    className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
-                      isMine ? "ml-auto bg-lagoon-500 text-white" : "bg-sand-100 text-ink-500"
-                    }`}
-                  >
-                    {m.mediaType === "image" && (
-                      <img src={m.mediaUrl} alt="" className="mb-1 max-h-64 rounded-lg object-cover" />
-                    )}
-                    {m.mediaType === "video" && (
-                      <video src={m.mediaUrl} controls className="mb-1 max-h-64 rounded-lg" />
-                    )}
-                    {m.mediaType === "audio" && (
-                      <audio src={m.mediaUrl} controls className="mb-1 w-56" />
-                    )}
-                    {m.content && <p>{m.content}</p>}
-                  </div>
-                );
-              })}
+            <div className="flex-1 space-y-3 overflow-y-auto bg-sand-50 p-4">
+              {messages.length === 0 ? (
+                <p className="pt-10 text-center text-sm text-ink-300">Aucun message pour l'instant.</p>
+              ) : (
+                messages.map((m) => {
+                  const isMine = m.sender === user.id;
+                  return (
+                    <div
+                      key={m._id}
+                      className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
+                        isMine ? "ml-auto bg-lagoon-500 text-white" : "bg-white text-ink-500"
+                      }`}
+                    >
+                      {m.mediaType === "image" && (
+                        <img src={m.mediaUrl} alt="" className="mb-1 max-h-64 rounded-lg object-cover" />
+                      )}
+                      {m.mediaType === "video" && (
+                        <video src={m.mediaUrl} controls className="mb-1 max-h-64 rounded-lg" />
+                      )}
+                      {m.mediaType === "audio" && (
+                        <audio src={m.mediaUrl} controls className="mb-1 w-56" />
+                      )}
+                      {m.content && <p>{m.content}</p>}
+                    </div>
+                  );
+                })
+              )}
               <div ref={bottomRef} />
             </div>
 
-            <div className="flex items-center gap-2 border-t border-sand-100 p-3">
+            <div className="flex items-center gap-2 border-t border-sand-100 bg-white p-3">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -233,7 +249,7 @@ export function MessagesPage() {
                 aria-label="Joindre une photo ou vidéo"
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink-400 hover:bg-sand-100"
               >
-                <Paperclip size={18} />
+                <Camera size={20} />
               </button>
 
               {isRecording ? (
@@ -251,7 +267,7 @@ export function MessagesPage() {
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink-400 hover:bg-sand-100"
                   aria-label="Message vocal"
                 >
-                  <Mic size={18} />
+                  <Mic size={20} />
                 </button>
               )}
 
@@ -259,12 +275,16 @@ export function MessagesPage() {
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSendText()}
-                placeholder={isRecording ? "Enregistrement en cours..." : "Écrire un message..."}
+                placeholder={isRecording ? "Enregistrement en cours..." : "Écris un message..."}
                 disabled={isRecording}
-                className="input-field flex-1"
+                className="flex-1 rounded-full border border-sand-200 bg-white px-4 py-2.5 text-sm focus:border-ink-400 focus:outline-none"
               />
-              <button onClick={handleSendText} disabled={isRecording} className="btn-primary shrink-0 px-4">
-                <Send size={16} />
+              <button
+                onClick={handleSendText}
+                disabled={isRecording}
+                className="shrink-0 rounded-full bg-ink-500 px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+              >
+                Envoyer
               </button>
             </div>
           </div>
