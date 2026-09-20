@@ -8,14 +8,34 @@ interface Props {
 }
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
-  `block rounded-lg px-3 py-2.5 text-sm font-medium ${
-    isActive ? "bg-sand-200 text-ink-500" : "text-ink-400 hover:bg-sand-100"
+  `flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium ${
+    isActive ? "bg-ink-500 text-white" : "text-ink-500 hover:bg-sand-100"
   }`;
+
+const ownerLinks = [
+  { to: "/", end: true, emoji: "🏠", label: "Accueil" },
+  { to: "/dashboard", end: true, emoji: "📊", label: "Vue d'ensemble" },
+  { to: "/dashboard/listings", emoji: "🏢", label: "Annonces" },
+  { to: "/dashboard/stats", emoji: "📈", label: "Statistiques" },
+  { to: "/dashboard/booster", emoji: "🚀", label: "Booster" },
+  { to: "/dashboard/collections", emoji: "📁", label: "Collections" },
+  { to: "/dashboard/messages", emoji: "💬", label: "Messages" },
+  { to: "/dashboard/reservations", emoji: "📰", label: "Commandes" },
+  { to: "/dashboard/profile", emoji: "👤", label: "Mon compte" },
+];
+
+const clientLinks = [
+  { to: "/", end: true, emoji: "🏠", label: "Accueil" },
+  { to: "/dashboard", end: true, emoji: "👤", label: "Mes informations" },
+  { to: "/dashboard/reservations", emoji: "📰", label: "Commandes" },
+  { to: "/dashboard/messages", emoji: "💬", label: "Messages" },
+];
 
 export function DashboardMobileMenu({ open, onClose }: Props) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const isOwner = user?.role === "owner" || user?.role === "admin";
+  const links = isOwner ? ownerLinks : clientLinks;
 
   function handleLogout() {
     logout();
@@ -37,37 +57,29 @@ export function DashboardMobileMenu({ open, onClose }: Props) {
         }`}
       >
         <div className="flex items-center justify-between border-b border-sand-200 p-4">
-          <span className="font-display text-lg font-semibold text-ink-500">Tableau de bord</span>
+          <div>
+            <p className="font-display text-lg font-semibold text-ink-500">⭐ Emobile</p>
+            <p className="text-xs text-ink-300">{isOwner ? "Espace propriétaire" : "Espace client"}</p>
+          </div>
           <button onClick={onClose} aria-label="Fermer le menu">
             <X size={20} />
           </button>
         </div>
 
-        <nav className="flex flex-col gap-1 p-2">
-          <NavLink to="/" end className={linkClass} onClick={onClose}>Accueil</NavLink>
-          {isOwner ? (
-            <>
-              <NavLink to="/dashboard" end className={linkClass} onClick={onClose}>Vue d'ensemble</NavLink>
-              <NavLink to="/dashboard/listings" className={linkClass} onClick={onClose}>Annonces</NavLink>
-              <NavLink to="/dashboard/stats" className={linkClass} onClick={onClose}>Statistiques</NavLink>
-              <NavLink to="/dashboard/messages" className={linkClass} onClick={onClose}>Messages</NavLink>
-              <NavLink to="/dashboard/reservations" className={linkClass} onClick={onClose}>Commandes</NavLink>
-              <NavLink to="/dashboard/booster" className={linkClass} onClick={onClose}>Booster</NavLink>
-              <NavLink to="/dashboard/collections" className={linkClass} onClick={onClose}>Collections</NavLink>
-            </>
-          ) : (
-            <>
-              <NavLink to="/dashboard" end className={linkClass} onClick={onClose}>Mes informations</NavLink>
-              <NavLink to="/dashboard/reservations" className={linkClass} onClick={onClose}>Commandes</NavLink>
-              <NavLink to="/dashboard/messages" className={linkClass} onClick={onClose}>Messages</NavLink>
-            </>
-          )}
+        <nav className="flex flex-col gap-1.5 p-3">
+          {links.map((l) => (
+            <NavLink key={l.label} to={l.to} end={l.end} className={linkClass} onClick={onClose}>
+              <span>{l.emoji}</span>
+              {l.label}
+            </NavLink>
+          ))}
 
           <div className="my-2 border-t border-sand-200" />
           <button
             onClick={handleLogout}
-            className="rounded-lg px-3 py-2.5 text-left text-sm font-medium text-clay-500 hover:bg-sand-100"
+            className="flex items-center gap-3 rounded-xl px-3.5 py-3 text-left text-sm font-medium text-clay-500 hover:bg-sand-100"
           >
+            <span>🚪</span>
             Déconnexion
           </button>
         </nav>
