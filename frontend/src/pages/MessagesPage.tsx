@@ -143,7 +143,7 @@ export function MessagesPage() {
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex flex-col bg-white">
+    <div className="fixed inset-0 z-[60] flex w-full max-w-full flex-col overflow-hidden bg-white">
       <div className="flex shrink-0 items-center gap-3 border-b border-sand-100 bg-white px-4 py-3">
         <Link to="/" aria-label="Accueil" className="text-ink-500"><ArrowLeft size={20} /></Link>
         <h1 className="font-display text-lg font-medium">Messages</h1>
@@ -157,7 +157,7 @@ export function MessagesPage() {
           annonce pour démarrer une discussion.
         </p>
       ) : (
-        <div className="flex min-h-0 flex-1 bg-white">
+        <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden bg-white">
           {/* Liste des conversations — cachée sur mobile une fois un fil ouvert */}
           <div className={`min-h-0 divide-y divide-sand-200 overflow-y-auto sm:block sm:w-64 sm:shrink-0 sm:border-r sm:border-sand-200 ${showThreadOnMobile ? "hidden" : "block w-full"}`}>
             {conversations.map((c) => (
@@ -175,7 +175,7 @@ export function MessagesPage() {
           </div>
 
           {/* Fil de discussion */}
-          <div className={`min-h-0 flex-1 flex-col sm:flex ${showThreadOnMobile ? "flex" : "hidden"}`}>
+          <div className={`min-h-0 min-w-0 flex-1 flex-col overflow-hidden sm:flex ${showThreadOnMobile ? "flex" : "hidden"}`}>
             {other && (
               <div className="flex items-center justify-between border-b border-sand-100 bg-white p-3">
                 <div className="flex items-center gap-2.5">
@@ -208,7 +208,7 @@ export function MessagesPage() {
               </div>
             )}
 
-            <div className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-sand-50 p-4">
+            <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overflow-x-hidden bg-sand-50 p-4">
               {messages.length === 0 ? (
                 <p className="pt-10 text-center text-sm text-ink-300">Aucun message pour l'instant.</p>
               ) : (
@@ -217,7 +217,7 @@ export function MessagesPage() {
                   return (
                     <div
                       key={m._id}
-                      className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
+                      className={`max-w-[78%] break-words rounded-2xl px-3 py-2 text-sm ${
                         isMine ? "ml-auto bg-lagoon-500 text-white" : "bg-white text-ink-500"
                       }`}
                     >

@@ -81,3 +81,5 @@
 }
 
 html,body{touch-action:manipulation;overscroll-behavior:none;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+
+html,body,#root{width:100%;max-width:100%;overflow-x:hidden}
