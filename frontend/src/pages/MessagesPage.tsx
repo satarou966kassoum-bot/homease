@@ -143,20 +143,23 @@ export function MessagesPage() {
   }
 
   return (
-    <div className="page-container section">
-      <h1 className="hidden font-display text-2xl font-medium sm:block">Messages</h1>
-
+    <div className="fixed inset-0 z-[60] flex flex-col bg-white">
+      <div className="flex shrink-0 items-center gap-3 border-b border-sand-100 bg-white px-4 py-3">
+        <Link to="/" aria-label="Accueil" className="text-ink-500"><ArrowLeft size={20} /></Link>
+        <h1 className="font-display text-lg font-medium">Messages</h1>
+      </div>
+      
       {isLoading ? (
-        <p className="mt-6 text-sm text-ink-300">Chargement...</p>
+        <p className="p-4 text-sm text-ink-300">Chargement...</p>
       ) : conversations.length === 0 ? (
-        <p className="mt-6 rounded-xl border border-dashed border-sand-200 p-10 text-center text-sm text-ink-300">
+        <p className="m-4 rounded-xl border border-dashed border-sand-200 p-10 text-center text-sm text-ink-300">
           Vous n'avez pas encore de conversation. Contactez un propriétaire depuis une
           annonce pour démarrer une discussion.
         </p>
       ) : (
-        <div className="mt-0 overflow-hidden rounded-xl border border-sand-200 bg-white sm:mt-6 sm:grid sm:grid-cols-[220px_1fr] sm:gap-0">
+        <div className="flex min-h-0 flex-1 bg-white">
           {/* Liste des conversations — cachée sur mobile une fois un fil ouvert */}
-          <div className={`divide-y divide-sand-200 sm:block sm:border-r sm:border-sand-200 ${showThreadOnMobile ? "hidden" : "block"}`}>
+          <div className={`min-h-0 divide-y divide-sand-200 overflow-y-auto sm:block sm:w-64 sm:shrink-0 sm:border-r sm:border-sand-200 ${showThreadOnMobile ? "hidden" : "block w-full"}`}>
             {conversations.map((c) => (
               <button
                 key={c._id}
@@ -172,7 +175,7 @@ export function MessagesPage() {
           </div>
 
           {/* Fil de discussion */}
-          <div className={`flex h-[75vh] flex-col sm:flex sm:h-[65vh] ${showThreadOnMobile ? "flex" : "hidden"}`}>
+          <div className={`min-h-0 flex-1 flex-col sm:flex ${showThreadOnMobile ? "flex" : "hidden"}`}>
             {other && (
               <div className="flex items-center justify-between border-b border-sand-100 bg-white p-3">
                 <div className="flex items-center gap-2.5">
@@ -205,7 +208,7 @@ export function MessagesPage() {
               </div>
             )}
 
-            <div className="flex-1 space-y-3 overflow-y-auto bg-sand-50 p-4">
+            <div className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-sand-50 p-4">
               {messages.length === 0 ? (
                 <p className="pt-10 text-center text-sm text-ink-300">Aucun message pour l'instant.</p>
               ) : (
@@ -235,7 +238,7 @@ export function MessagesPage() {
               <div ref={bottomRef} />
             </div>
 
-            <div className="flex items-center gap-2 border-t border-sand-100 bg-white p-3">
+            <div className="flex shrink-0 items-center gap-2 border-t border-sand-100 bg-white p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
               <input
                 ref={fileInputRef}
                 type="file"

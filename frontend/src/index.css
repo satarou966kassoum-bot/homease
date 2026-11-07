@@ -79,3 +79,5 @@
     @apply mx-auto mt-2 h-1.5 w-10 rounded-full bg-sand-200;
   }
 }
+
+html,body{touch-action:manipulation;overscroll-behavior:none;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
